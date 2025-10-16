@@ -2,6 +2,7 @@ import Image from "next/image";
 import HeaderClient from "./HeaderClient";
 import NavList from "./NavList";
 import { getCategories } from "@/utils/supabase/getCategories";
+import Link from "next/link";
 
 export default async function Header({ scrolled, hasH1 }) {
   const categories = await getCategories();
@@ -10,7 +11,7 @@ export default async function Header({ scrolled, hasH1 }) {
     <HeaderClient scrolled={scrolled} categories={categories}>
       {hasH1 ? (
         <h1>
-          <a
+          <Link
             href="/"
             title="서부뉴스 홈으로 이동"
             className="relative w-[100px] h-[33px] md:w-[150px] md:h-[50px] block"
@@ -22,10 +23,10 @@ export default async function Header({ scrolled, hasH1 }) {
               style={{ objectFit: "contain" }}
               priority
             />
-          </a>
+          </Link>
         </h1>
       ) : (
-        <a
+        <Link
           href="/"
           title="서부뉴스 홈으로 이동"
           className="relative w-[100px] h-[33px] md:w-[150px] md:h-[50px] block"
@@ -37,7 +38,7 @@ export default async function Header({ scrolled, hasH1 }) {
             style={{ objectFit: "contain" }}
             priority
           />
-        </a>
+        </Link>
       )}
       <NavList />
     </HeaderClient>

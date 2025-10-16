@@ -8,7 +8,7 @@ import { useState } from "react";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import { Add } from "@mui/icons-material";
 
-export default function Articles({ categorySlug, categoryName }) {
+export default function Articles({ categorySlug, categoryName, key }) {
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
   const supabase = createBrowserSupabaseClient();
@@ -37,7 +37,7 @@ export default function Articles({ categorySlug, categoryName }) {
   };
 
   return (
-    <section className="w-full">
+    <section className="w-full" key={key}>
       <Link href={`/${categorySlug}`} aria-label="카테고리로 이동">
         <div className="flex items-center w-full">
           <p className="text-xl font-bold flex-1">{categoryName}</p>
