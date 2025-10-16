@@ -1,6 +1,7 @@
 // 모든 카테고리 가져오기 (캐시 포함)
 export const getCategories = async () => {
-  const res = await fetch(`https://western-news.vercel.app/api/cats`, {
+  const res = await fetch(`https://western-news.vercel.app/api/categories`, {
+    // const res = await fetch(`https://western-news.vercel.app/api/cats`, {
     next: { revalidate: 360 },
   });
   if (!res.ok) throw new Error("Failed to fetch categories");
