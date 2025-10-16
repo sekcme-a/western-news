@@ -1,8 +1,8 @@
-const API_URL = `${process.env.NEXT_PUBLIC_SITE_URL}/api/categories`;
-
 // 모든 카테고리 가져오기 (캐시 포함)
 export const getCategories = async () => {
-  const res = await fetch(API_URL, { next: { revalidate: 360 } });
+  const res = await fetch(`https://westernnews.vercel.app/api/cats`, {
+    next: { revalidate: 360 },
+  });
   if (!res.ok) throw new Error("Failed to fetch categories");
   return res.json();
 };
