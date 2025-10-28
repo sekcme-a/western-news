@@ -1,16 +1,17 @@
-// 모든 카테고리 가져오기 (캐시 포함)
-export const getCategories = async () => {
-  const res = await fetch(`https://western-news.vercel.app/api/categories`, {
-    // const res = await fetch(`https://western-news.vercel.app/api/cats`, {
-    next: { revalidate: 360 },
-  });
-  if (!res.ok) throw new Error("Failed to fetch categories");
-  return res.json();
-};
+import { cache } from "react";
+import { createServerSupabaseClient } from "./server";
+
+export const getCategories = cache(async () => {
+  const supabase = await createServerSupabaseClient();
+  const { data, error } = await supabase.from("categories").select("*");
+  if (error) throw error;
+  return data;
+});
 
 // parent_id가 null인 카테고리 정렬
 export const getParentCategories = async () => {
   const categories = await getCategories();
+  console.log(categories);
   return categories
     .filter((c) => c.parent_id === null)
     .sort((a, b) => a.order - b.order);

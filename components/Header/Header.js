@@ -3,8 +3,11 @@ import HeaderClient from "./HeaderClient";
 import NavList from "./NavList";
 import { getCategories } from "@/utils/supabase/getCategories";
 import Link from "next/link";
+import { headers } from "next/headers";
 
 export default async function Header({ scrolled, hasH1 }) {
+  // return res.json();
+
   const categories = await getCategories();
 
   return (
