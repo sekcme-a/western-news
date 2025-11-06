@@ -9,11 +9,12 @@ import { useEffect } from "react";
 
 // 메뉴에서 현재 경로에 해당하는 제목 찾기
 function findMenuTitle(menuList, pathname) {
+  if (pathname === "/admin") return "대쉬보드";
   const cleanPath = pathname.replace(/^\/admin/, ""); // /admin 제거
   let exactMatch = null;
   let partialMatch = null;
 
-  if (pathname.includes("/articles/")) return "기사 편집";
+  // if (pathname.includes("/articles/")) return "기사 편집";
 
   for (const item of menuList) {
     if (item.link && item.link === cleanPath) {
@@ -36,7 +37,7 @@ const Header = () => {
   const pathname = usePathname();
 
   useEffect(() => {
-    const foundTitle = findMenuTitle(MENU, pathname) ?? "대쉬보드";
+    const foundTitle = findMenuTitle(MENU, pathname) ?? "기사편집";
     setTitle(foundTitle);
   }, [pathname]);
 

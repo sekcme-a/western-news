@@ -34,8 +34,8 @@ export default function Home() {
 
         <BodyThree
           categorys={[
-            { slug: "social", name: "사회" },
-            { slug: "culture", name: "생활/문화" },
+            { slug: "society", name: "사회" },
+            { slug: "lifestyle", name: "생활/문화" },
             { slug: "sports", name: "스포츠" },
             { slug: "special", name: "기획/특집" },
           ]}

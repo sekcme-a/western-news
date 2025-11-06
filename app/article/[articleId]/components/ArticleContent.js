@@ -19,6 +19,7 @@ export default function ArticleContent({ article }) {
   return (
     <article>
       <h1 className="text-3xl font-bold ">{article.title}</h1>
+
       <p className="text-xs text-gray-400 mt-3">
         {formatDate(article.created_at)}
       </p>
@@ -35,10 +36,35 @@ export default function ArticleContent({ article }) {
       </div> */}
 
       {/* seo */}
+
       <div
         className="prose prose-neutral max-w-none hidden"
         dangerouslySetInnerHTML={{ __html: article.content }}
       />
+
+      {!article.subtitle && (
+        <h2 className="text-xl font-bold mt-3">{article.subtitle}</h2>
+      )}
+      {article.images_bodo?.map((img, index) => (
+        <div className="w-full mt-5" key={index}>
+          <Image
+            src={img}
+            alt={`${article.title} 이미지 ${index + 1}`}
+            width={800} // 아무 값이나 OK (비율 계산용)
+            height={600} // 아무 값이나 OK (비율 계산용)
+            style={{
+              width: "100%",
+              height: "auto",
+              objectFit: "contain",
+            }}
+          />
+          {article.image_descriptions?.[index] && (
+            <p className="mt-1 text-sm text-gray-400">
+              {article.image_descriptions[index]}
+            </p>
+          )}
+        </div>
+      ))}
 
       <div className="mt-9 quill-article mb-10">
         <QuillArticle html={article.content} />

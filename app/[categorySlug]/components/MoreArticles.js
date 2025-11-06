@@ -24,7 +24,7 @@ export default function MoreArticles({ categorySlug }) {
 
     const { data, error } = await supabase
       .from("article_categories")
-      .select("articles(title, thumbnail_image, content)")
+      .select("articles(title, thumbnail_image, content, id)")
       .eq("category_slug", categorySlug)
       .eq("is_main", false)
       .order("created_at", { referencedTable: "articles", ascending: false })
