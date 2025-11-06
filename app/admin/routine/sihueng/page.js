@@ -44,7 +44,8 @@ export default function SiheungBodo({ setErrors }) {
   const fetchDates = async () => {
     const d = await fetchRoutine();
     console.log(d);
-    setDateInput(JSON.stringify(d));
+    // setDateInput(JSON.stringify(d));
+    setDateInput(`["2025-11-05]`);
   };
 
   const fetchArticles = async () => {
