@@ -100,46 +100,52 @@ export default function MailPage() {
             총 {mails.length}개의 메일이 검색되었습니다.
           </p>
           <ul className="space-y-3">
-            {mails.map((mail, i) => (
-              <li
-                key={i}
-                className={`p-3 rounded-md border border-gray-200 
+            {mails.map((mail, i) => {
+              if (mail.hasAttachments) {
+                return (
+                  <li
+                    key={i}
+                    className={`p-3 rounded-md border border-gray-200 
                   shadow-sm flex items-center space-x-3 
                   ${selectedMails.includes(mail) ? "bg-green-100" : ""}`}
-              >
-                <input
-                  type="checkbox"
-                  checked={selectedMails.includes(mail)}
-                  onChange={() => toggleSelect(mail)}
-                  className="w-4 h-4 cursor-pointer"
-                  onClick={(e) => e.stopPropagation()} // li 클릭 이벤트 전파 방지
-                />
-                <div
-                  className="flex-grow cursor-pointer"
-                  onClick={() => toggleSelect(mail)} // 메일 정보를 클릭해도 선택되게
-                >
-                  <p className="font-semibold">{mail.subject}</p>
-                  <p className="text-sm text-gray-600">보낸이: {mail.from}</p>
-                  <p className="text-xs text-gray-500">
-                    {new Date(mail.date).toLocaleString("ko-KR")}
-                  </p>
-                </div>
-
-                {/* ⭐ 첨부파일 다운로드 링크 추가 */}
-                {mail.hasAttachments && mail.uid && (
-                  <a
-                    href={`/api/mail/download/${mail.uid}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()} // li의 선택 이벤트 방지
-                    className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-gray-200 flex-shrink-0"
-                    title="첨부파일 다운로드"
                   >
-                    📎
-                  </a>
-                )}
-              </li>
-            ))}
+                    <input
+                      type="checkbox"
+                      checked={selectedMails.includes(mail)}
+                      onChange={() => toggleSelect(mail)}
+                      className="w-4 h-4 cursor-pointer"
+                      onClick={(e) => e.stopPropagation()} // li 클릭 이벤트 전파 방지
+                    />
+                    <div
+                      className="flex-grow cursor-pointer"
+                      onClick={() => toggleSelect(mail)} // 메일 정보를 클릭해도 선택되게
+                    >
+                      <p className="font-semibold">{mail.subject}</p>
+                      <p className="text-sm text-gray-600">
+                        보낸이: {mail.from}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {new Date(mail.date).toLocaleString("ko-KR")}
+                      </p>
+                    </div>
+
+                    {/* ⭐ 첨부파일 다운로드 링크 추가 */}
+                    {mail.hasAttachments && mail.uid && (
+                      <a
+                        href={`/api/mail/download/${mail.uid}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()} // li의 선택 이벤트 방지
+                        className="text-blue-500 hover:text-blue-700 p-2 rounded-full hover:bg-gray-200 flex-shrink-0"
+                        title="첨부파일 다운로드"
+                      >
+                        📎
+                      </a>
+                    )}
+                  </li>
+                );
+              }
+            })}
           </ul>
 
           <button

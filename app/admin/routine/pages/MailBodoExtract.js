@@ -154,11 +154,13 @@ export default function MailBodoExtract({
       <p className="mt-2">{`${mailPage + 1} / ${selectedMails.length}번째`}</p>
 
       <p className="mt-2 font-bold">{selectedMails[mailPage]?.subject}</p>
+
       <a href={`/api/mail/download/${selectedMails[mailPage]?.uid}`}>
         <Button fullWidth className="h-[15vh]" variant="contained">
           첨부파일 다운로드
         </Button>
       </a>
+
       <Button
         fullWidth
         className="h-[15vh] "
