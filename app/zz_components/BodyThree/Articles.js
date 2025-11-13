@@ -18,22 +18,35 @@ export default function Articles({ categorySlug, categoryName, key }) {
   }, []);
   const fetchData = async () => {
     const { data: dataWithImg, error: imgError } = await supabase
-      .from("article_categories")
-      .select("articles(title, id, thumbnail_image, content)")
-      .eq("category_slug", categorySlug)
-      .order("created_at", { referencedTable: "articles", ascending: false })
+      .from("articles")
+      .select(
+        `
+      id,
+      title,
+      thumbnail_image, 
+      content
+      article_categories!inner(category_slug)
+    `
+      )
+      .eq("article_categories.category_slug", categorySlug)
+      .order("created_at", { ascending: false })
       .limit(1);
+
     const { data, error } = await supabase
-      .from("article_categories")
-      .select("articles(title, id, content)")
-      .eq("category_slug", categorySlug)
-      .order("created_at", { referencedTable: "articles", ascending: false })
+      .from("articles")
+      .select(
+        `
+      id,
+      title,
+      content,
+      article_categories!inner(category_slug)
+    `
+      )
+      .eq("article_categories.category_slug", categorySlug)
+      .order("created_at", { ascending: false })
       .range(1, 2);
 
-    setList([
-      ...dataWithImg.map((item) => item.articles),
-      ...data.map((item) => item.articles),
-    ]);
+    setList([...dataWithImg, ...data]);
   };
 
   return (

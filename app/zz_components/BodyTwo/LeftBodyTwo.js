@@ -7,33 +7,47 @@ export default async function LeftBodyTwo({ categorySlug }) {
 
   try {
     const { data: fullData, error } = await supabase
-      .from("article_categories")
-      .select("articles(title, thumbnail_image, id, content)")
-      .eq("category_slug", categorySlug)
-      .order("created_at", { referencedTable: "articles", ascending: false })
+      .from("articles")
+      .select(
+        `
+      id,
+      title,
+       thumbnail_image, 
+        content,
+      article_categories!inner(category_slug)
+    `
+      )
+      .eq("article_categories.category_slug", categorySlug)
+      .order("created_at", { ascending: false })
       .limit(1);
 
     if (error) throw new Error(error.message);
     if (!fullData) throw new Error("No article found");
 
-    const plainContent = fullData[0]?.articles.content
+    const plainContent = fullData[0]?.content
       .replace(/<br\s*\/?>/gi, "\n") // <br>을 줄바꿈으로 변환
       .replace(/<[^>]+>/g, "") // 모든 HTML 태그 제거
       .replace(/\n\s*\n/g, "\n\n") // 연속 줄바꿈 정리
       .trim();
-    const fullArticle = { ...fullData[0]?.articles, content: plainContent };
+    const fullArticle = { ...fullData[0], content: plainContent };
 
     const { data: datas, error: datasError } = await supabase
-      .from("article_categories")
-      .select("articles(title, id)")
-      .eq("category_slug", categorySlug)
-      .order("created_at", { referencedTable: "articles", ascending: false })
+      .from("articles")
+      .select(
+        `
+      id,
+      title,
+      article_categories!inner(category_slug)
+    `
+      )
+      .eq("article_categories.category_slug", categorySlug)
+      .order("created_at", { ascending: false })
       .range(1, 3);
 
     if (datasError) throw new Error(datasError.message);
     if (!datas) throw new Error("No article found");
 
-    const articles = datas.map((item) => item.articles);
+    const articles = datas || [];
 
     return (
       <section>

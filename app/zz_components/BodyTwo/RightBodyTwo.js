@@ -7,30 +7,41 @@ export default async function RightBodyTwo({ categorySlug }) {
 
   try {
     const { data, error } = await supabase
-      .from("article_categories")
-      .select("articles(title, id, thumbnail_image)")
-      .eq("category_slug", categorySlug)
-      .order("created_at", { referencedTable: "articles", ascending: false })
-      // .range(3, 4);
+      .from("articles")
+      .select(
+        `
+      id,
+      title,
+      thumbnail_image,
+      article_categories!inner(category_slug)
+    `
+      )
+      .eq("article_categories.category_slug", categorySlug)
+      .order("created_at", { ascending: false })
       .range(4, 5);
 
     if (error) throw new Error(error.message);
     if (!data) throw new Error("No article found");
 
-    const imageArticles = data.map((item) => item.articles);
+    const imageArticles = data || [];
 
     const { data: arts, error: artsErr } = await supabase
-      .from("article_categories")
-      .select("articles(title, id)")
-      .eq("category_slug", categorySlug)
-      .order("created_at", { referencedTable: "articles", ascending: false })
-      // .range(0, 3);
+      .from("articles")
+      .select(
+        `
+      id,
+      title,
+      article_categories!inner(category_slug)
+    `
+      )
+      .eq("article_categories.category_slug", categorySlug)
+      .order("created_at", { ascending: false })
       .range(6, 9);
 
     if (artsErr) throw new Error(artsErr.message);
     if (!arts) throw new Error("No article found");
 
-    const textArticles = arts.map((item) => item.articles);
+    const textArticles = arts || [];
     console.log(textArticles);
     return (
       <section className="md:flex w-full gap-x-4">

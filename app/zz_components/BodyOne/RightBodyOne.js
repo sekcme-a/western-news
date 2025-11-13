@@ -10,10 +10,16 @@ export default async function RightBodyOne({
 
   try {
     const { data, error } = await supabase
-      .from("article_categories")
-      .select("articles(title, id), category_slug")
-      .eq("category_slug", rightCategorySlug)
-      .order("created_at", { referencedTable: "articles", ascending: false })
+      .from("articles")
+      .select(
+        `
+      id,
+      title,
+      article_categories!inner(category_slug)
+    `
+      )
+      .eq("article_categories.category_slug", rightCategorySlug)
+      .order("created_at", { ascending: false })
       .limit(limit);
 
     if (error) throw new Error(error.message);

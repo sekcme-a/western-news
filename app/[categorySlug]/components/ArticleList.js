@@ -10,18 +10,28 @@ export default async function ArticleList({ categorySlug }) {
 
   try {
     const { data, error } = await supabase
-      .from("article_categories")
-      .select("articles(title, thumbnail_image, content, id)")
-      .eq("category_slug", categorySlug)
-      .eq("is_main", false)
-      .order("created_at", { referencedTable: "articles", ascending: false })
+      .from("articles")
+      .select(
+        `
+      id,
+      title,
+      thumbnail_image,
+      content,
+      created_at,
+      article_categories!inner(category_slug, is_main)
+    `
+      )
+      .eq("article_categories.category_slug", categorySlug)
+      .eq("article_categories.is_main", false)
+      .order("created_at", { ascending: false })
       .limit(10);
 
     if (error) throw new Error(error.message);
     if (!data) throw new Error("기사가 없습니다");
 
     const articles = data.map((item) => {
-      const article = item.articles;
+      const article = item;
+      // const article = item.articles;
       const plainContent = htmlToPlainString(article.content);
       return { ...article, content: plainContent };
     });

@@ -45,7 +45,7 @@ export default function SiheungBodo({ setErrors }) {
     const d = await fetchRoutine();
     console.log(d);
     // setDateInput(JSON.stringify(d));
-    setDateInput(`["2025-11-05"]`);
+    setDateInput(`["2025-11-11"]`);
   };
 
   const fetchArticles = async () => {
@@ -65,10 +65,10 @@ export default function SiheungBodo({ setErrors }) {
 
           setLog((prev) => [
             ...prev,
-            `[성공] ${date} 보도자료 ${data?.posts.length}개 확인`,
+            `[성공] ${date} 보도자료 ${data?.posts?.length}개 확인`,
           ]);
-          list = [...list, ...data.posts];
-          setPosts((prev) => [...prev, ...data.posts]);
+          list = [...list, ...(data?.posts ?? [])];
+          setPosts((prev) => [...prev, ...(data?.posts ?? [])]);
         } catch (error) {
           console.log(error);
           setLog((prev) => [...prev, `[에러] ${date} 보도자료 수집 실패`]);

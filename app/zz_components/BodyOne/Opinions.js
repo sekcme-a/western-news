@@ -6,16 +6,22 @@ export default async function Opinions() {
 
   try {
     const { data, error } = await supabase
-      .from("article_categories")
-      .select("articles(title, id), category_slug")
-      .eq("category_slug", "opinion")
-      .order("created_at", { referencedTable: "articles", ascending: false })
+      .from("articles")
+      .select(
+        `
+      id,
+      title,
+      article_categories!inner(category_slug)
+    `
+      )
+      .eq("article_categories.category_slug", "opinion")
+      .order("created_at", { ascending: false })
       .limit(14);
 
     if (error) throw new Error(error.message);
     if (!data) throw new Error("No articles found");
 
-    const articles = data?.map((item) => item.articles) || [];
+    const articles = data || [];
 
     return (
       <div>

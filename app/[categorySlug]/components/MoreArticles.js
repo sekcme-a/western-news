@@ -23,11 +23,20 @@ export default function MoreArticles({ categorySlug }) {
     const to = from + PAGE_SIZE - 1;
 
     const { data, error } = await supabase
-      .from("article_categories")
-      .select("articles(title, thumbnail_image, content, id)")
-      .eq("category_slug", categorySlug)
-      .eq("is_main", false)
-      .order("created_at", { referencedTable: "articles", ascending: false })
+      .from("articles")
+      .select(
+        `
+      id,
+      title,
+      thumbnail_image,
+      content,
+      created_at,
+      article_categories!inner(category_slug, is_main)
+    `
+      )
+      .eq("article_categories.category_slug", categorySlug)
+      .eq("article_categories.is_main", false)
+      .order("created_at", { ascending: false })
       .range(from, to);
 
     if (error) {
@@ -36,7 +45,7 @@ export default function MoreArticles({ categorySlug }) {
       if (data.length < PAGE_SIZE) setHasMore(false); // 더 이상 데이터 없으면
 
       const list = data.map((item) => {
-        const article = item.articles;
+        const article = item;
         const plainContent = htmlToPlainString(article.content);
         return { ...article, content: plainContent };
       });

@@ -7,17 +7,24 @@ export default async function BodyFullArticle({ categorySlug }) {
 
   try {
     const { data, error } = await supabase
-      .from("article_categories")
-      .select("articles(title, thumbnail_image, id, content)")
-      .eq("category_slug", categorySlug)
-      .order("created_at", { referencedTable: "articles", ascending: false })
+      .from("articles")
+      .select(
+        `
+      id,
+      title,
+      thumbnail_image,
+      content,
+      article_categories!inner(category_slug)
+    `
+      )
+      .eq("article_categories.category_slug", categorySlug)
       .limit(1);
 
     if (error) throw new Error(error.message);
 
     if (!data) throw new Error("No article found");
 
-    const article = data[0]?.articles;
+    const article = data[0];
 
     const plainContent = article?.content
       .replace(/<br\s*\/?>/gi, "\n") // <br>을 줄바꿈으로 변환

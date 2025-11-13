@@ -6,39 +6,54 @@ export default async function BodyArticles({ categorySlug }) {
   const supabase = await createServerSupabaseClient();
   try {
     const { data: dataWithContent, error } = await supabase
-      .from("article_categories")
-      .select("articles(title, content, id)")
-      .eq("category_slug", categorySlug)
-      .order("created_at", { referencedTable: "articles", ascending: false })
+      .from("articles")
+      .select(
+        `
+      id,
+      title,
+      content,
+      article_categories!inner(category_slug)
+    `
+      )
+      .eq("article_categories.category_slug", categorySlug)
+      .order("created_at", { ascending: false })
       .range(1, 2);
 
     if (error) throw new Error(error.message);
     if (!dataWithContent) throw new Error("No articles found");
 
     const contentArticles = dataWithContent.map((item) => {
-      const plainContent = item.articles.content
+      const plainContent = item.content
         .replace(/<br\s*\/?>/gi, "\n") // <br>을 줄바꿈으로 변환
         .replace(/<[^>]+>/g, "") // 모든 HTML 태그 제거
         .replace(/\n\s*\n/g, "\n\n") // 연속 줄바꿈 정리
         .trim();
-      return { ...item.articles, content: plainContent };
+      return { ...item, content: plainContent };
     });
 
     const { data: dataWithImg, error: imgError } = await supabase
-      .from("article_categories")
-      .select("articles(title, thumbnail_image, content,id)")
-      .eq("category_slug", categorySlug)
-      .order("created_at", { referencedTable: "articles", ascending: false })
+      .from("articles")
+      .select(
+        `
+      id,
+      title,
+      thumbnail_image,
+      content,
+      article_categories!inner(category_slug)
+    `
+      )
+      .eq("article_categories.category_slug", categorySlug)
+      .order("created_at", { ascending: false })
       .range(3, 3);
     if (imgError) throw new Error(imgError.message);
     if (!dataWithImg) throw new Error("No articles found");
 
-    const plainContent = dataWithImg[0].articles.content
+    const plainContent = dataWithImg[0].content
       .replace(/<br\s*\/?>/gi, "\n") // <br>을 줄바꿈으로 변환
       .replace(/<[^>]+>/g, "") // 모든 HTML 태그 제거
       .replace(/\n\s*\n/g, "\n\n") // 연속 줄바꿈 정리
       .trim();
-    const imgArticle = { ...dataWithImg[0].articles, content: plainContent };
+    const imgArticle = { ...dataWithImg[0], content: plainContent };
 
     return (
       <div>

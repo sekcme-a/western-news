@@ -200,6 +200,7 @@ export default function MailBodoExtract({
             router.push(`/admin/routine/sihueng`);
             // setPage((prev) => prev + 1);
           } else {
+            setText("");
             setMailPage((prev) => prev + 1);
           }
         }}
