@@ -199,7 +199,7 @@ export default function Routine() {
         )}
         <button
           onClick={async () => {
-            await navigator.clipboard.writeText("hop");
+            // await navigator.clipboard.writeText("hop");
             setPage(1);
           }}
           className="mt-6 w-full bg-green-500 text-white py-2 rounded-lg font-medium hover:bg-green-600 transition"

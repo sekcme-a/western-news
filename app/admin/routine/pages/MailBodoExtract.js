@@ -36,7 +36,7 @@ export default function MailBodoExtract({
   const supabase = createBrowserSupabaseClient();
 
   useEffect(() => {
-    if (selectedMails.length === 0) navigator.clipboard.writeText("next");
+    if (selectedMails.length === 0) navigator.clipboard.writeText("hop");
   }, [selectedMails]);
 
   useEffect(() => {
