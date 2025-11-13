@@ -44,8 +44,8 @@ export default function AnsanBodo({ setErrors }) {
   const fetchDates = async () => {
     const d = await fetchRoutine();
     console.log(d);
-    // setDateInput(JSON.stringify(d));
-    setDateInput(`["2025-11-11"]`);
+    setDateInput(JSON.stringify(d));
+    // setDateInput(`["2025-11-11"]`);
   };
 
   const fetchArticles = async () => {
@@ -70,6 +70,8 @@ export default function AnsanBodo({ setErrors }) {
           list = [...list, ...(data?.articles ?? [])];
           console.log(list);
           setPosts((prev) => [...prev, ...(data?.articles ?? [])]);
+          if (data?.articles?.length === 0)
+            navigator.clipboard.writeText("null");
         } catch (error) {
           console.log(error);
           setLog((prev) => [...prev, `[에러] ${date} 보도자료 수집 실패`]);

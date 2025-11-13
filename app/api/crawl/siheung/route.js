@@ -13,7 +13,7 @@ function isWithinRange(date, start, end) {
 }
 
 function extractViewUrlFromOnClick(onClick) {
-  const match = onClick.match(
+  const match = onClick?.match(
     /goTo\.view\('list','(\d+)',\s*'(\d+)',\s*'(\d+)'\)/
   );
   if (!match) return null;
@@ -62,9 +62,10 @@ export async function GET(request) {
   const maxCount = 100;
   let currentPage = 1;
   let collected = [];
+  let shouldStop = false;
 
   try {
-    while (collected.length < maxCount) {
+    while (collected.length < maxCount && !shouldStop) {
       const url = `https://www.siheung.go.kr/media/bbs/list.do?ptIdx=82&mId=0100000000&page=${currentPage}`;
       const res = await axios.get(url);
       const $ = cheerio.load(res.data);
@@ -72,8 +73,8 @@ export async function GET(request) {
       const items = $("div.bod_blog ul li");
       if (items.length === 0) break;
 
-      // ✅ 한 페이지에서 처리할 URL 수집
       const viewUrls = [];
+
       for (const el of items.toArray()) {
         if (collected.length + viewUrls.length >= maxCount) break;
 
@@ -86,22 +87,35 @@ export async function GET(request) {
         const fullText = `[${rawText}]\n\n${decodedText}`;
         const createdAt = parseDateFromText(fullText);
 
-        if (!createdAt || !isWithinRange(createdAt, startDate, endDate))
-          continue;
+        if (!createdAt) continue;
 
-        const viewUrl = extractViewUrlFromOnClick(onClick);
-        if (viewUrl) viewUrls.push(viewUrl);
+        // ✅ 최신순 정렬이므로, 시작일보다 이전이면 종료
+        if (createdAt < startDate) {
+          shouldStop = true;
+          break;
+        }
+
+        if (isWithinRange(createdAt, startDate, endDate)) {
+          const viewUrl = extractViewUrlFromOnClick(onClick);
+          if (viewUrl) viewUrls.push(viewUrl);
+        }
       }
 
-      if (viewUrls.length === 0 && collected.length !== 0) break;
-
-      // ✅ 병렬로 상세 페이지 크롤링
-      const details = await Promise.all(viewUrls.map(crawlViewPage));
-      for (const detail of details) {
-        if (detail && collected.length < maxCount) collected.push(detail);
+      if (viewUrls.length > 0) {
+        const details = await Promise.all(viewUrls.map(crawlViewPage));
+        for (const detail of details) {
+          if (detail && collected.length < maxCount) collected.push(detail);
+        }
       }
 
       currentPage++;
+    }
+
+    if (collected.length === 0) {
+      return NextResponse.json({
+        posts: [],
+        message: "해당 기간에는 게시물이 없습니다.",
+      });
     }
 
     return NextResponse.json({ posts: collected });

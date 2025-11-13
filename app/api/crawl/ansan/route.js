@@ -17,11 +17,12 @@ export async function GET(request) {
   const endDate = endParam ? parseDate(endParam) : null;
 
   const maxArticles = 50;
-  let currentPage = startPage.toString() === "0" ? 1 : startPage;
+  let currentPage = startPage.toString() === "0" ? 1 : parseInt(startPage);
   let articles = [];
+  let shouldStop = false; // ✅ 날짜 범위 벗어나면 종료
 
   try {
-    while (articles.length < maxArticles) {
+    while (articles.length < maxArticles && !shouldStop) {
       if (currentPage === 15) break;
 
       const url = `https://www.ansan.go.kr/www/common/bbs/selectPageListBbs.do?key=274&bbs_code=B0238&currentPage=${currentPage}`;
@@ -44,16 +45,25 @@ export async function GET(request) {
         const dateStr = tds.eq(4).text().trim();
         const date = parseDate(dateStr);
 
+        // 번호 없는 공지 등은 스킵
         if (isNaN(parseInt(number))) continue;
-        if ((startDate && date < startDate) || (endDate && date > endDate))
-          continue;
 
+        // ✅ 최신순이므로 startDate보다 이전이면 루프 종료
+        if (startDate && date < startDate) {
+          shouldStop = true;
+          break;
+        }
+
+        // ✅ endDate보다 이후(너무 최신)는 스킵
+        if (endDate && date > endDate) continue;
+
+        // ✅ detail URL 파싱
         const match = onclick?.match(/fnGoDetail\(\s*(\d+)\s*\)/);
         if (!match) continue;
-
         const seq = match[1];
         const detailUrl = `https://www.ansan.go.kr/www/common/bbs/selectBbsDetail.do?key=274&bbs_code=B0238&bbs_seq=${seq}&currentPage=${currentPage}`;
 
+        // 상세 페이지 크롤링
         const detailRes = await axios.get(detailUrl);
         const $$ = cheerio.load(detailRes.data);
 
@@ -83,7 +93,7 @@ export async function GET(request) {
           }
         });
 
-        // 첨부파일
+        // ✅ 첨부파일 가져오기
         const files = [];
         $$(".p-attach__item a").each((_, el) => {
           const fileOnclick = $$(el).attr("onclick");
@@ -101,13 +111,19 @@ export async function GET(request) {
           date: dateStr,
           content,
           attachments: files,
-          images, // ✅ 이미지 배열 추가
+          images,
           url: detailUrl,
         });
         addedThisPage++;
       }
 
-      if (addedThisPage === 0 && articles.length !== 0) break;
+      // ✅ startDate보다 오래된 글을 만나면 루프 즉시 종료
+      if (shouldStop) break;
+
+      // ✅ 게시글 추가 없으면 종료
+      if (addedThisPage === 0 && articles.length > 0) break;
+
+      // ✅ 단일 페이지 조회 요청일 경우 (page param 지정 시)
       if (startPage.toString() !== "0") break;
 
       currentPage++;
@@ -117,6 +133,10 @@ export async function GET(request) {
       JSON.stringify({
         count: articles.length,
         articles,
+        message:
+          articles.length === 0
+            ? "해당 기간에는 게시물이 없습니다."
+            : undefined,
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
