@@ -6,9 +6,6 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /admin/
-Disallow: /admin-login
-Disallow: /admin-login/
-
 Sitemap: https://western-news.co.kr/sitemap.xml
   `.trim();
 
