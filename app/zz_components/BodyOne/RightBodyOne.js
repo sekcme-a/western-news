@@ -18,14 +18,16 @@ export default async function RightBodyOne({
       article_categories!inner(category_slug)
     `
       )
-      .eq("article_categories.category_slug", rightCategorySlug)
+      .eq("article_categories.category_slug", "opinion")
       .order("created_at", { ascending: false })
       .limit(limit);
 
+    console.log(data);
     if (error) throw new Error(error.message);
     if (!data) throw new Error("No articles found");
 
-    const articles = data?.map((item) => item.articles) || [];
+    const articles = data;
+    // const articles = data?.map((item) => item.articles) || [];
 
     return (
       <div>
