@@ -55,7 +55,7 @@ const buildCategoryTree = (categories) => {
   return tree;
 };
 
-export default function SideNavbar({ categoriess }) {
+export default function SideNavbar({ categoriess, onClick }) {
   const [isOpen, setIsOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -153,7 +153,12 @@ export default function SideNavbar({ categoriess }) {
   return (
     <>
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          onClick();
+          setTimeout(() => {
+            setIsOpen(true);
+          }, 200);
+        }}
         className="ml-[10px] cursor-pointer"
       >
         <MenuRoundedIcon style={{ color: "white", fontSize: "28px" }} />

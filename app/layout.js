@@ -19,7 +19,16 @@ export { metadata };
 export default async function RootLayout({ children }) {
   return (
     <html lang="ko">
-      <head></head>
+      <head>
+        <meta
+          name="google-site-verification"
+          content="A6KUKr1vGzoqcpBVclpjxstOtyLutxNtOJ9CyuPjD7o"
+        />
+        <meta
+          name="naver-site-verification"
+          content="f914505610ec81ad25fe2f20822e2ae3ab9add09"
+        />
+      </head>
       <body
         className={[
           `bg-[#1f1f1f] text-white vsc-initialized ${geistSans.variable} ${geistMono.variable}`,

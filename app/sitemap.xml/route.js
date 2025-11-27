@@ -15,12 +15,6 @@ export async function GET() {
       changefreq: "weekly",
       priority: "1.0",
     },
-    {
-      loc: `${baseUrl}/login`,
-      lastmod: today,
-      changefreq: "yearly",
-      priority: "0.1", // 낮은 우선순위로 유지하거나 제거 가능
-    },
   ];
 
   // category page는 SEO에 중요 → 적절한 설정 추가

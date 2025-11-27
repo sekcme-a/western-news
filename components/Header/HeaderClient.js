@@ -74,7 +74,10 @@ export default function HeaderClient({ children, scrolled, categories }) {
               </button>
             </li>
             <li>
-              <SideNavbar categoriess={categories} />
+              <SideNavbar
+                categoriess={categories}
+                onClick={() => setShowSearch(false)}
+              />
             </li>
           </ul>
         </div>
