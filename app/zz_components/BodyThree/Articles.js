@@ -64,7 +64,7 @@ export default function Articles({ categorySlug, categoryName, key }) {
               <div className="mt-4 rounded-md overflow-hidden relative w-full h-36">
                 <Image
                   src={list[0]?.thumbnail_image ?? "/images/og_logo.png"}
-                  alt={list[0]?.title}
+                  alt={list[0]?.title ?? `${categoryName} 대표 이미지`}
                   fill
                   objectFit="cover"
                 />
