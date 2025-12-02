@@ -26,11 +26,11 @@ export default async function RootLayout({ children }) {
         />
         <meta
           name="naver-site-verification"
-          content="f914505610ec81ad25fe2f20822e2ae3ab9add09"
+          content="ed1a27114b5fb9210151ad92826cc1c75a280862"
         />
         <link
           rel="shortcut icon"
-          href="https://western-news.co.kr/favicon.ico"
+          href="https://www.western-news.co.kr/favicon.ico"
         ></link>
       </head>
       <body
