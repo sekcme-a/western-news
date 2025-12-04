@@ -45,6 +45,33 @@ export default function ArticleContent({ article }) {
       {!article.subtitle && (
         <h2 className="text-xl font-bold mt-3">{article.subtitle}</h2>
       )}
+      {article.title?.includes("덕암") && article.title?.includes("칼럼") && (
+        <div className="w-full mt-5">
+          <Image
+            src={
+              article.thumbnail_image ??
+              (article.title?.includes("덕암") &&
+                article.title?.includes("칼럼"))
+                ? "/images/kyunsik.png"
+                : "/images/og_logo.png"
+            }
+            alt={article.title}
+            objectFit={
+              article.title?.includes("덕암") && article.title?.includes("칼럼")
+                ? "contain"
+                : "cover"
+            }
+            width={800} // 아무 값이나 OK (비율 계산용)
+            height={600} // 아무 값이나 OK (비율 계산용)
+            style={{
+              width: "100%",
+              height: "40vh",
+              maxHeight: "300px",
+              objectFit: "contain",
+            }}
+          />
+        </div>
+      )}
       {article.images_bodo?.map((img, index) => (
         <div className="w-full mt-5" key={index}>
           <Image

@@ -24,7 +24,7 @@ export default function Articles({ categorySlug, categoryName, key }) {
       id,
       title,
       thumbnail_image, 
-      content
+      content,
       article_categories!inner(category_slug)
     `
       )

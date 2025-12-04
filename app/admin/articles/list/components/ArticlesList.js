@@ -1,5 +1,6 @@
 import { createServerSupabaseClient } from "@/utils/supabase/server";
 import Link from "next/link";
+import Article from "./Article";
 
 export default async function ArticlesList({
   search,
@@ -8,7 +9,7 @@ export default async function ArticlesList({
 }) {
   const supabase = await createServerSupabaseClient();
 
-  let query = supabase.from("articles").select("id, title, created_at");
+  let query = supabase.from("articles").select("id");
 
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
@@ -41,26 +42,7 @@ export default async function ArticlesList({
   return (
     <ul>
       {articles?.map((article) => (
-        <li
-          key={article.id}
-          className=" border border-gray-300 rounded \
-          hover:shadow-xl hover:border-blue-700 hover:text-blue-700 
-          transition cursor-pointer mb-2"
-        >
-          <Link href={`/admin/articles/${article.id}`}>
-            <article className="md:flex justify-between items-center px-4 py-3 break-keep">
-              <h2 className="text-lg md:text-xl font-semibold leading-tight line-clamp-2">
-                {article.title}
-              </h2>
-              <p className="text-sm text-gray-500 mt-1">
-                작성일:{" "}
-                <time dateTime={article.created_at}>
-                  {new Date(article.created_at).toLocaleDateString()}
-                </time>
-              </p>
-            </article>
-          </Link>
-        </li>
+        <Article key={article.id} articleId={article.id} />
       ))}
     </ul>
   );

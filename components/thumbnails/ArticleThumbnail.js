@@ -8,10 +8,22 @@ export default function ArticleThumbnail({ article, key }) {
         <article className="hover-effect flex gap-x-4 md:gap-x-8 items-center">
           <div className="w-2/5 md:w-1/5 relative  h-24 rounded-lg overflow-hidden">
             <Image
-              src={article.thumbnail_image ?? "/images/og_logo.png"}
+              src={
+                article.thumbnail_image ??
+                (article.title?.includes("덕암") &&
+                  article.title?.includes("칼럼"))
+                  ? "/images/kyunsik.png"
+                  : "/images/og_logo.png"
+              }
               alt={article.title}
               fill
-              objectFit="cover"
+              objectFit={
+                article.title?.includes("덕암") &&
+                article.title?.includes("칼럼")
+                  ? "contain"
+                  : "cover"
+              }
+              style={{ backgroundColor: "black" }}
             />
           </div>
           <div className="w-3/5 md:w-4/5">
