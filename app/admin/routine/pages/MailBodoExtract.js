@@ -8,6 +8,7 @@ import { saveArticle } from "./function/saveArticle";
 import { convertTextToQuillHTML } from "./function/convertTextToQuillHTML";
 import { useRouter } from "next/navigation";
 import { addSession } from "../handleSession";
+import Link from "next/link";
 
 const TEXT = `아래의 문장은 hwp파일에 들어있는 보도자료들을 복사한거야. 규칙에 맞게 json 형태로 변환해줘. 
 1. 데이터 형식은 [{title, subtitle, image_descriptions:[], content, slug}] 
@@ -155,11 +156,11 @@ export default function MailBodoExtract({
 
       <p className="mt-2 font-bold">{selectedMails[mailPage]?.subject}</p>
 
-      <a href={`/api/mail/download/${selectedMails[mailPage]?.uid}`}>
+      <Link href={`/api/mail/download/${selectedMails[mailPage]?.uid}`}>
         <Button fullWidth className="h-[15vh]" variant="contained">
           첨부파일 다운로드
         </Button>
-      </a>
+      </Link>
 
       <Button
         fullWidth

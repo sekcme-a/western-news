@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@mui/material";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -67,9 +68,9 @@ export default function ResultPage() {
             </Button>
           )}
           {item.articleIds?.map((id, index) => (
-            <a href={`/admin/articles/${id}`} target="_blank" key={index}>
+            <Link href={`/admin/articles/${id}`} target="_blank" key={index}>
               <p>기사 보기 {index}</p>
-            </a>
+            </Link>
           ))}
         </li>
       ))}

@@ -7,6 +7,7 @@ import { validatePassword } from "../utils/validation";
 import Container from "../login/components/Container";
 import PasswordField from "../login/components/PasswordField";
 import { createBrowserSupabaseClient } from "@/utils/supabase/client";
+import Link from "next/link";
 
 // 공통 스타일 (로그인 페이지와 동일)
 const buttonStyle = {
@@ -146,9 +147,12 @@ const SignUpPage = () => {
       </form>
 
       <div style={{ textAlign: "center", fontSize: "14px" }}>
-        <a href="/login" style={{ color: "#007aff", textDecoration: "none" }}>
+        <Link
+          href="/login"
+          style={{ color: "#007aff", textDecoration: "none" }}
+        >
           로그인 페이지로
-        </a>
+        </Link>
       </div>
     </Container>
   );
