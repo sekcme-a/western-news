@@ -4,6 +4,7 @@
 import React, { useState } from "react";
 import Container from "../login/components/Container";
 import { createBrowserSupabaseClient } from "@/utils/supabase/client";
+import Link from "next/link";
 
 // 공통 스타일
 const buttonStyle = {
@@ -105,12 +106,12 @@ const ForgotPasswordPage = () => {
         </button>
       </form>
       <div style={{ textAlign: "center", fontSize: "14px" }}>
-        <a
+        <Link
           href="/auth/login"
           style={{ color: "#007aff", textDecoration: "none" }}
         >
           로그인 페이지로
-        </a>
+        </Link>
       </div>
     </Container>
   );

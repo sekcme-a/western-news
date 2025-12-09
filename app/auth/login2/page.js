@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import Container from "../login/components/Container";
 import PasswordField from "../login/components/PasswordField";
 import { createBrowserSupabaseClient } from "@/utils/supabase/client";
+import Link from "next/link";
 
 // 공통 버튼 스타일
 const buttonStyle = {
@@ -111,7 +112,7 @@ const LoginPage = () => {
       </form>
 
       <div style={{ textAlign: "center", fontSize: "14px" }}>
-        <a
+        <Link
           href="/auth/signup"
           style={{
             color: "#007aff",
@@ -120,13 +121,13 @@ const LoginPage = () => {
           }}
         >
           회원가입
-        </a>
-        <a
+        </Link>
+        <Link
           href="/auth/forgot-password"
           style={{ color: "#007aff", textDecoration: "none" }}
         >
           비밀번호 찾기
-        </a>
+        </Link>
       </div>
     </Container>
   );
