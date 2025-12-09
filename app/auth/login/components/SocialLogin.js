@@ -11,7 +11,7 @@ const SocialLogin = async () => {
 
   console.log(user);
   return (
-    <div className="flex justify-center mt-20 flex-wrap">
+    <div className="flex justify-center pt-40 flex-wrap">
       <h2 className="text-3xl font-bold w-full text-center">로그인</h2>
       <p className="mt-5 w-full text-center">
         소셜로그인으로 간편하게 로그인하세요!

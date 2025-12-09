@@ -1,3 +1,4 @@
+import Header from "@/components/Header/Header";
 import { createServerSupabaseClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -12,5 +13,10 @@ export default async function LoginLayout({ children }) {
     redirect("/");
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <Header hasH1 />
+      {children}
+    </>
+  );
 }
