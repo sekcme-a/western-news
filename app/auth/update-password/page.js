@@ -118,16 +118,16 @@ const UpdatePasswordPage = () => {
     }
   };
 
-  // onAuthStateChange가 상태를 감지할 때까지 로딩 상태 표시
-  if (!isRecoverySession && message === "") {
-    return (
-      <Container title="인증 확인 중">
-        <p style={{ textAlign: "center", color: "#ccc" }}>
-          재설정 세션 유효성을 확인하는 중입니다...
-        </p>
-      </Container>
-    );
-  }
+  // // onAuthStateChange가 상태를 감지할 때까지 로딩 상태 표시
+  // if (!isRecoverySession && message === "") {
+  //   return (
+  //     <Container title="인증 확인 중">
+  //       <p style={{ textAlign: "center", color: "#ccc" }}>
+  //         재설정 세션 유효성을 확인하는 중입니다...
+  //       </p>
+  //     </Container>
+  //   );
+  // }
 
   // 메시지 상태에 따라 양식 또는 오류 메시지 표시
   return (
