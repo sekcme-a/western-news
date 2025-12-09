@@ -13,9 +13,10 @@ export default function ArticleSmallThumbnail({ article, key }) {
         <div className="relative w-1/4 h-16 rounded-lg overflow-hidden">
           <Image
             src={
-              article.thumbnail_image ??
-              (article.title?.includes("덕암") &&
-                article.title?.includes("칼럼"))
+              article.thumbnail_image
+                ? article.thumbnail_image
+                : article.title?.includes("덕암") &&
+                  article.title?.includes("칼럼")
                 ? "/images/kyunsik.png"
                 : "/images/og_logo.png"
             }

@@ -9,7 +9,12 @@ import NavList from "./NavList";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-export default function HeaderClient({ children, scrolled, categories }) {
+export default function HeaderClient({
+  children,
+  scrolled,
+  categories,
+  isSignedIn,
+}) {
   const router = useRouter();
   const [isScrolled, setIsScrolled] = useState(scrolled ?? false);
   const [showSearch, setShowSearch] = useState(false);
@@ -42,6 +47,13 @@ export default function HeaderClient({ children, scrolled, categories }) {
     router.push(`article/search?input=${searchValue}`);
   };
 
+  // ⭐️ 인증 상태에 따라 라우팅을 처리하는 함수
+  const handlePersonIconClick = () => {
+    // 시니어급: 명확한 변수명과 조건부 로직
+    const targetPath = isSignedIn ? "/mypage/profile" : "/auth/login";
+    router.push(targetPath);
+  };
+
   return (
     <header className="fixed z-20 w-full bg-[#1f1f1f]">
       {/* 상단 헤더 */}
@@ -54,9 +66,17 @@ export default function HeaderClient({ children, scrolled, categories }) {
 
           <ul className="flex items-center">
             <li>
-              <PersonOutlineRoundedIcon
-                style={{ color: "white", fontSize: "28px" }}
-              />
+              <button
+                onClick={handlePersonIconClick} // ⭐️ 클릭 이벤트 핸들러 연결
+                aria-label={
+                  isSignedIn ? "프로필 페이지로 이동" : "로그인 페이지로 이동"
+                }
+                className="cursor-pointer" // 버튼에 커서 스타일 적용
+              >
+                <PersonOutlineRoundedIcon
+                  style={{ color: "white", fontSize: "28px" }}
+                />
+              </button>
             </li>
             <li>
               <button

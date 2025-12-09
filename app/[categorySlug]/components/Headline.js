@@ -34,9 +34,10 @@ export default async function Headline({ categorySlug }) {
           <div className="relative w-full h-64 rounded-lg overflow-hidden mt-5 md:mt-0">
             <Image
               src={
-                article.thumbnail_image ??
-                (article.title?.includes("덕암") &&
-                  article.title?.includes("칼럼"))
+                article.thumbnail_image
+                  ? article.thumbnail_image
+                  : article.title?.includes("덕암") &&
+                    article.title?.includes("칼럼")
                   ? "/images/kyunsik.png"
                   : "/images/og_logo.png"
               }

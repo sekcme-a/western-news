@@ -4,14 +4,27 @@ import NavList from "./NavList";
 import { getCategories } from "@/utils/supabase/getCategories";
 import Link from "next/link";
 import { headers } from "next/headers";
+import { createServerSupabaseClient } from "@/utils/supabase/server";
 
 export default async function Header({ scrolled, hasH1 }) {
   // return res.json();
-
+  const supabase = await createServerSupabaseClient();
   const categories = await getCategories();
 
+  // 세션 정보 가져오기
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  // 로그인 여부 (Boolean)
+  const isSignedIn = !!session;
+
   return (
-    <HeaderClient scrolled={scrolled} categories={categories}>
+    <HeaderClient
+      scrolled={scrolled}
+      categories={categories}
+      isSignedIn={isSignedIn}
+    >
       {hasH1 ? (
         <h1>
           <Link
