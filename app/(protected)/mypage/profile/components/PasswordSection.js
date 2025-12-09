@@ -16,12 +16,7 @@ export default function PasswordSection({
       return;
     }
 
-    // 사용자가 이메일 내 링크를 클릭하면 이동할 페이지 URL
-    const redirectUrl = `${window.location.origin}/login/reset-password`;
-
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: redirectUrl,
-    });
+    const { error } = await supabase.auth.resetPasswordForEmail(email);
 
     if (error) {
       alert(`비밀번호 재설정 요청 실패: ${error.message}`);
