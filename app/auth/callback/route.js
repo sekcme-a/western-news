@@ -33,6 +33,12 @@ export async function GET(request) {
             email: user.email,
             avatar_url: user?.user_metadata?.avatar_url ?? null,
           });
+          const { error } = await supabase.auth.updateUser({
+            data: {
+              display_name:
+                user?.user_metadata?.name ?? `유저_${user.id.slice(0, 8)}`,
+            },
+          });
         }
       }
 

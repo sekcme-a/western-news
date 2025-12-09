@@ -1,0 +1,67 @@
+// app/mypage/components/PasswordSection.js
+"use client";
+
+import { createBrowserSupabaseClient } from "@/utils/supabase/client";
+
+export default function PasswordSection({
+  email,
+  hasPasswordSet,
+  isSocialOnly,
+}) {
+  const supabase = createBrowserSupabaseClient();
+
+  const handlePasswordReset = async () => {
+    if (!email) {
+      alert("사용자 이메일 정보를 찾을 수 없습니다.");
+      return;
+    }
+
+    // 사용자가 이메일 내 링크를 클릭하면 이동할 페이지 URL
+    const redirectUrl = `${window.location.origin}/login/reset-password`;
+
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl,
+    });
+
+    if (error) {
+      alert(`비밀번호 재설정 요청 실패: ${error.message}`);
+    } else {
+      alert("비밀번호 재설정 이메일을 발송했습니다. 이메일을 확인해주세요.");
+    }
+  };
+
+  return (
+    <div className="py-2">
+      <div className="flex justify-between items-start">
+        <span className="font-medium w-1/4">비밀번호</span>
+
+        <div className="w-3/4 flex flex-col space-y-2">
+          {/* 1. 소셜 로그인 사용자 안내 문구 (1-2) */}
+          {isSocialOnly && (
+            <p className="text-sm text-yellow-600 p-2 bg-yellow-50 border border-yellow-200 rounded">
+              계정 안전을 위해 비밀번호를 설정해보세요. 비밀번호 설정 후에는
+              이메일과 비밀번호로 로그인하실 수 있습니다.
+            </p>
+          )}
+
+          {/* 현재 상태 표시 */}
+          <span className="text-gray-600">
+            {hasPasswordSet
+              ? "비밀번호가 설정되어 있습니다."
+              : isSocialOnly
+              ? "비밀번호가 설정되어 있지 않습니다."
+              : "로그인 방식을 확인할 수 없습니다."}
+          </span>
+
+          {/* '변경' 버튼 */}
+          <button
+            onClick={handlePasswordReset}
+            className="mt-2 px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 self-start"
+          >
+            변경 (재설정 이메일 발송)
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
