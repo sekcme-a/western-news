@@ -15,7 +15,7 @@ export default function GoogleButton() {
 
   return (
     <div
-      className="relative w-9/12 md:w-[300px] mt-5 cursor-pointer 
+      className="relative w-full mt-3 cursor-pointer 
     flex items-center bg-white rounded-md py-1"
       onClick={signInWithGoogle}
     >

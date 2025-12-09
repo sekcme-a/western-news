@@ -43,11 +43,11 @@ export default function MyPageClient({ initialUserData }) {
         />
 
         {/* 비밀번호 섹션 (1-2) */}
-        {/* <PasswordSection
+        <PasswordSection
           email={userData.email}
           hasPasswordSet={hasEmailProvider}
           isSocialOnly={socialProviders.length > 0 && !hasEmailProvider}
-        /> */}
+        />
       </section>
 
       {/* 2. 소셜 로그인 관리 (연결 계정) */}

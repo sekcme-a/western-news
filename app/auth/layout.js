@@ -15,7 +15,7 @@ export default async function LoginLayout({ children }) {
 
   return (
     <>
-      <Header hasH1 />
+      {/* <Header hasH1 /> */}
       {children}
     </>
   );

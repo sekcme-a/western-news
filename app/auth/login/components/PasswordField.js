@@ -1,6 +1,7 @@
 // src/components/PasswordField.js
 import React, { useState } from "react";
-
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 // 간단한 스타일 정의
 const inputGroupStyle = {
   marginBottom: "20px",
@@ -70,7 +71,11 @@ const PasswordField = ({
           aria-label={showPassword ? "Hide password" : "Show password"}
         >
           {/* 간단한 텍스트 아이콘으로 대체, 실제로는 SVG 사용 권장 */}
-          {showPassword ? "👁️" : "🔒"}
+          {showPassword ? (
+            <VisibilityIcon fontSize="small" />
+          ) : (
+            <VisibilityOffIcon fontSize="small" />
+          )}
         </button>
       </div>
     </div>

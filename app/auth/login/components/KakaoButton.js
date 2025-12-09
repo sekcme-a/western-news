@@ -15,7 +15,7 @@ export default function KakaoButton() {
 
   return (
     <div
-      className="relative w-9/12 md:w-[300px] mt-10 cursor-pointer 
+      className="relative w-full mt-4 cursor-pointer 
     flex items-center bg-[#fee500] rounded-md py-1"
       onClick={signInWithKakao}
     >
