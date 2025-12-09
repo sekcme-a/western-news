@@ -28,11 +28,13 @@ export default async function ProfilePage() {
     ? data.display_name
     : user.user_metadata?.display_name || "닉네임 미설정";
   const providers = user.app_metadata.providers || [];
+  const emailVerified = user.user_metadata?.email_verified || false;
 
   const userData = {
     email,
     nickname,
     providers,
+    emailVerified,
   };
 
   return (

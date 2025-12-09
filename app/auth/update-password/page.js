@@ -105,11 +105,11 @@ const UpdatePasswordPage = () => {
       }
 
       setMessage(
-        "비밀번호가 성공적으로 재설정되었습니다! 2초 후 로그인 페이지로 이동합니다."
+        "비밀번호가 성공적으로 재설정되었습니다! 2초 후 홈 화면으로 이동합니다."
       );
       // 비밀번호 업데이트 후 세션이 변경되므로 onAuthStateChange가 SIGNED_IN 이벤트를 발생시킬 수 있습니다.
       setTimeout(() => {
-        router.push("/login");
+        router.push("/");
       }, 2000);
     } catch (error) {
       setMessage(`비밀번호 업데이트 실패: ${error.message}`);

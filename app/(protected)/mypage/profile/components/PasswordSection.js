@@ -6,7 +6,7 @@ import { createBrowserSupabaseClient } from "@/utils/supabase/client";
 export default function PasswordSection({
   email,
   hasPasswordSet,
-  isSocialOnly,
+  emailVerified,
 }) {
   const supabase = createBrowserSupabaseClient();
 
@@ -34,7 +34,7 @@ export default function PasswordSection({
 
         <div className="w-3/4 flex flex-col space-y-2">
           {/* 1. 소셜 로그인 사용자 안내 문구 (1-2) */}
-          {isSocialOnly && (
+          {!emailVerified && (
             <div className="flex justify-between items-center">
               <p className="text-sm text-gray-400 ">
                 계정 안전을 위해 비밀번호를 설정해보세요. 비밀번호 설정 후에는
@@ -50,7 +50,7 @@ export default function PasswordSection({
           )}
 
           {/* 현재 상태 표시 */}
-          {!isSocialOnly && (
+          {emailVerified && (
             <div className="flex justify-between items-center">
               <span className="text-gray-200">
                 {hasPasswordSet

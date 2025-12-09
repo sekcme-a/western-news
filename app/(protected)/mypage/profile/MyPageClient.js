@@ -46,7 +46,7 @@ export default function MyPageClient({ initialUserData }) {
         <PasswordSection
           email={userData.email}
           hasPasswordSet={hasEmailProvider}
-          isSocialOnly={socialProviders.length > 0 && !hasEmailProvider}
+          emailVerified={userData.emailVerified}
         />
       </section>
 
