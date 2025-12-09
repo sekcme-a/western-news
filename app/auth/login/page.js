@@ -1,7 +1,7 @@
 "use client";
 // src/pages/login.js
 import React, { useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import Container from "../login/components/Container";
 import PasswordField from "../login/components/PasswordField";
 import { createBrowserSupabaseClient } from "@/utils/supabase/client";
@@ -44,6 +44,7 @@ const labelStyle = {
 
 const LoginPage = () => {
   const supabase = createBrowserSupabaseClient();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);

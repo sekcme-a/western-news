@@ -38,10 +38,18 @@ export default function PasswordSection({
         <div className="w-3/4 flex flex-col space-y-2">
           {/* 1. 소셜 로그인 사용자 안내 문구 (1-2) */}
           {isSocialOnly && (
-            <p className="text-sm text-gray-400 ">
-              계정 안전을 위해 비밀번호를 설정해보세요. 비밀번호 설정 후에는
-              이메일과 비밀번호로 로그인하실 수 있습니다.
-            </p>
+            <div className="flex justify-between items-center">
+              <p className="text-sm text-gray-400 ">
+                계정 안전을 위해 비밀번호를 설정해보세요. 비밀번호 설정 후에는
+                이메일과 비밀번호로 로그인하실 수 있습니다.
+              </p>
+              <button
+                onClick={handlePasswordReset}
+                className="mt-2 px-3 py-1 text-sm bg-gray-600 text-white hover:bg-gray-700 rounded cursor-pointer "
+              >
+                설정
+              </button>
+            </div>
           )}
 
           {/* 현재 상태 표시 */}
