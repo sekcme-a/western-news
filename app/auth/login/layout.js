@@ -1,4 +1,3 @@
-import Header from "@/components/Header/Header";
 import { createServerSupabaseClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 

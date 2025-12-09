@@ -21,13 +21,12 @@ export default async function ProfilePage() {
     .select("display_name")
     .eq("id", user.id)
     .single();
-
+  console.log(data);
   // 닉네임은 user_metadata에서, 로그인 제공자는 app_metadata에서 가져옵니다.
   const email = user.email || "N/A";
-  const nickname =
-    // data?.display_name
-    // ? data.display_name:
-    user.user_metadata?.display_name || "닉네임 미설정";
+  const nickname = data?.display_name
+    ? data.display_name
+    : user.user_metadata?.display_name || "닉네임 미설정";
   const providers = user.app_metadata.providers || [];
 
   const userData = {
