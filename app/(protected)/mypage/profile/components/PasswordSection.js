@@ -53,11 +53,7 @@ export default function PasswordSection({
           {emailVerified && (
             <div className="flex justify-between items-center">
               <span className="text-gray-200">
-                {hasPasswordSet
-                  ? "비밀번호가 설정되어 있습니다."
-                  : isSocialOnly
-                  ? "비밀번호가 설정되어 있지 않습니다."
-                  : "로그인 방식을 확인할 수 없습니다."}
+                비밀번호가 설정되어 있습니다.
               </span>
 
               {/* '변경' 버튼 */}
