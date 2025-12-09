@@ -54,7 +54,7 @@ const ForgotPasswordPage = () => {
       // Supabase의 `resetPasswordForEmail` 함수 사용
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         // redirectTo: `https://www.western-news.co.kr/auth/update-password`, // 이메일 링크 클릭 후 이동할 페이지
-        redirectTo: `https://www.western-news.co.kr/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/callback`,
       });
 
       if (error) {
