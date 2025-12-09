@@ -132,7 +132,7 @@ const UpdatePasswordPage = () => {
   // 메시지 상태에 따라 양식 또는 오류 메시지 표시
   return (
     <Container title="비밀번호 재설정">
-      {!isRecoverySession ? (
+      {false ? (
         // 세션이 유효하지 않은 경우
         <>
           <p style={errorStyle}>{message}</p>
