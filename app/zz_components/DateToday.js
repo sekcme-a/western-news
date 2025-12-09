@@ -8,7 +8,7 @@ export default function DateToday() {
 
   return (
     <p className="text-right text-xs my-1.5 text-gray-400 hidden md:block">
-      {new Date().toLocaleString("ko-KR", options)}
+      {new Date().toLocaleString("ko-KR", options)}asdf
     </p>
   );
 }
