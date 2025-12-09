@@ -17,7 +17,7 @@ const PasswordReset = () => {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         // 비밀번호 재설정 후 사용자가 리다이렉트될 URL 설정
         // 이 URL은 Supabase Auth 설정의 "Site URL"과 "Redirect URLs"에 등록되어야 합니다.
-        redirectTo: `${window.location.origin}/update-password`,
+        redirectTo: `${window.location.origin}/auth/callback`,
       });
 
       if (error) throw error;
