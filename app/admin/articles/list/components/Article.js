@@ -5,14 +5,20 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 // 경로를 수정했습니다.
 import CategorySelector from "../../[articleId]/components/ArticleEditor/CategorySelector/CategorySelector";
+// 새로 추가된 Context Hook 임포트
+import { useArticleSelection } from "./ArticleSelectionProvider";
+import { Checkbox } from "@mui/material";
 
-// Article 컴포넌트의 props에 key는 필요 없으므로 제거했습니다.
 export default function Article({ articleId }) {
   const [article, setArticle] = useState(null);
   const [categories, setCategories] = useState([]); // 현재 연결된 카테고리 (이름 표시용)
   const [selectedCategoryIds, setSelectedCategoryIds] = useState([]); // CategorySelector에서 사용될 ID 목록
   const [isSaving, setIsSaving] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false); // 셀렉터 확장/축소 상태
+
+  // ArticleSelection Context 사용
+  const { toggleArticleSelection, isSelected } = useArticleSelection();
+  const checked = isSelected(articleId); // 현재 기사의 선택 상태
 
   useEffect(() => {
     if (articleId) fetchData();
@@ -117,26 +123,45 @@ export default function Article({ articleId }) {
 
   if (!article) return <li>로딩중...</li>;
 
+  // 체크박스 클릭 핸들러 (Link 이동 방지)
+  const handleCheckboxClick = (e) => {
+    e.stopPropagation(); // Link로의 이벤트 전파 방지
+    toggleArticleSelection(articleId);
+  };
+
   return (
     <li
-      key={articleId} // key는 여기에 두는 것이 일반적입니다.
-      className=" border border-gray-300 rounded 
-          hover:shadow-xl hover:border-blue-700 hover:text-blue-700 
-          transition cursor-pointer mb-2"
+      key={articleId}
+      // 선택 상태에 따라 배경색 변경
+      className={`border rounded transition cursor-pointer mb-2 
+          ${
+            checked
+              ? "border-blue-700 bg-blue-50/50 shadow-lg"
+              : "border-gray-300 hover:shadow-xl hover:border-blue-700"
+          }`}
     >
-      <Link href={`/admin/articles/${articleId}`}>
-        <article className="md:flex justify-between items-center px-4 py-3 break-keep">
-          <h2 className="text-lg md:text-xl font-semibold leading-tight line-clamp-2">
-            {article.title}
-          </h2>
-          <p className="text-sm text-gray-500 mt-1">
-            작성일:{" "}
-            <time dateTime={article.created_at}>
-              {new Date(article.created_at).toLocaleDateString()}
-            </time>
-          </p>
-        </article>
-      </Link>
+      <div className="flex items-center">
+        {/* 체크박스 영역 */}
+        <div className="p-2" onClick={handleCheckboxClick}>
+          <Checkbox checked={checked} onChange={() => {}} />
+        </div>
+
+        {/* 기사 제목, 날짜 영역 (Link로 감싸기) */}
+        <Link href={`/admin/articles/${articleId}`} className="flex-grow">
+          <article className="md:flex justify-between items-center pr-4 py-3 break-keep">
+            <h2 className="text-lg md:text-xl font-semibold leading-tight line-clamp-2">
+              {article.title}
+            </h2>
+            <p className="text-sm text-gray-500 mt-1">
+              작성일:{" "}
+              <time dateTime={article.created_at}>
+                {new Date(article.created_at).toLocaleDateString()}
+              </time>
+            </p>
+          </article>
+        </Link>
+      </div>
+
       <div className="px-4 pb-3">
         {categories.length === 0 && (
           <span className="inline-block bg-red-600 text-white text-sm px-2 py-1 rounded mr-2">
