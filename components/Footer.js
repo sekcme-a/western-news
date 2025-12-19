@@ -6,13 +6,11 @@ const Footer = () => {
   const FOOTER_ONE = [
     "주소 - 경기도 시흥시 장현동 671-5  시티프론트561 더파이브437호",
     "전화 - 010-5339-6943",
-    "발행인 - 김균식",
+    "발행인 - 심귀자",
+    "편집인 - 심귀자",
+    "청소년보호책임자 - 심귀자",
   ];
-  const FOOTER_TWO = [
-    "사업자명 - 서부뉴스",
-    "사업자등록번호 - 710-81-02517",
-    "대표자명 - 김균식",
-  ];
+  const FOOTER_TWO = ["사업자명 - 서부뉴스", "사업자등록번호 - 710-81-02517"];
   return (
     <footer className="pt-14 md:pt-20  md:mx-[4vw] lg:mx-[7vw] mx-[12px]">
       <div className="mt-18 flex flex-col md:flex-row border-t-2 border-white py-10 px-2 items-center">
