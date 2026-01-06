@@ -23,7 +23,7 @@ export default function RoutineResult({ setPage }) {
     navigator.clipboard.writeText("routine_finished");
   }, []);
 
-  const totalArticles = results.success.length + results.error.length;
+  const totalArticles = results?.success?.length + results?.error?.length;
 
   if (loading) {
     return (
@@ -40,19 +40,19 @@ export default function RoutineResult({ setPage }) {
         ✅ 루틴 작업 결과
       </h1>
       <p className="text-lg text-gray-600 mb-8">
-        총 **{totalArticles}개**의 기사 중 **{results.success.length}개** 저장
+        총 **{totalArticles}개**의 기사 중 **{results?.success?.length}개** 저장
         성공, **
-        {results.error.length}개** 저장 실패
+        {results?.error?.length}개** 저장 실패
       </p>
 
       {/* 성공 목록 - 저장된 기사 */}
       <div className="mb-10 p-5 border-2 border-green-200 rounded-xl bg-green-50">
         <h2 className="text-xl font-bold mb-4 text-green-700">
-          🟢 성공적으로 저장된 기사 ({results.success.length}개)
+          🟢 성공적으로 저장된 기사 ({results?.success?.length}개)
         </h2>
-        {results.success.length > 0 ? (
+        {results?.success?.length > 0 ? (
           <ul className="space-y-3">
-            {results.success.map((res, index) => (
+            {results?.success?.map((res, index) => (
               <li
                 key={index}
                 className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm"
@@ -108,9 +108,9 @@ export default function RoutineResult({ setPage }) {
       {/* 실패 목록 - 저장되지 않은 기사 및 이유 */}
       <div className="p-5 border-2 border-red-200 rounded-xl bg-red-50">
         <h2 className="text-xl font-bold mb-4 text-red-700">
-          🛑 저장 실패 및 경고 ({results.error.length}개)
+          🛑 저장 실패 및 경고 ({results?.error?.length}개)
         </h2>
-        {results.error.length > 0 ? (
+        {results?.error?.length > 0 ? (
           <ul className="space-y-3">
             {results.error.map((err, index) => (
               <li
@@ -159,7 +159,7 @@ export default function RoutineResult({ setPage }) {
         )}
       </div>
 
-      <Button
+      {/* <Button
         variant="contained"
         fullWidth
         className="h-[15vh]"
@@ -174,7 +174,7 @@ export default function RoutineResult({ setPage }) {
         }}
       >
         새 루틴 시작하기
-      </Button>
+      </Button> */}
     </div>
   );
 }

@@ -120,8 +120,10 @@ const Room = ({ setOpenRoom, posts }) => {
         variant="contained"
         fullWidth
         style={{ height: "15vh", marginBottom: "2vh", marginTop: "5vh" }}
-        onClick={() => {
-          supabase.from("routine").insert({ type: "ansan", date: new Date() });
+        onClick={async () => {
+          await supabase
+            .from("routine")
+            .insert({ type: "ansan", date: new Date() });
           router.push(`/admin/routine/result`);
         }}
       >

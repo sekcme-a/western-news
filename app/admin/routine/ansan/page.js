@@ -26,6 +26,8 @@ export default function AnsanBodo({ setErrors }) {
 
   const [log, setLog] = useState([]);
   const [dateInput, setDateInput] = useState("");
+  const [lastDateInput, setlastDateInput] = useState("");
+  const [isFixedDate, setIsFixedDate] = useState(false);
 
   useEffect(() => {
     // fetchArticles();
@@ -45,7 +47,26 @@ export default function AnsanBodo({ setErrors }) {
     const d = await fetchRoutine();
     console.log(d);
     setDateInput(JSON.stringify(d));
+    setlastDateInput(JSON.stringify(d));
     // setDateInput(`["2025-11-11"]`);
+    fetchDateFix();
+  };
+
+  const fetchDateFix = async () => {
+    const { data, error } = await supabase
+      .from("routine")
+      .select("data")
+      .eq("type", "ansan_fix_date")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (data?.data) {
+      setDateInput(data.data);
+      setIsFixedDate(true);
+    } else {
+      setIsFixedDate(false);
+    }
   };
 
   const fetchArticles = async () => {
@@ -251,16 +272,51 @@ export default function AnsanBodo({ setErrors }) {
     }
   };
 
+  const onFixClick = async () => {
+    if (!isFixedDate) {
+      const { error } = await supabase
+        .from("routine")
+        .insert({ type: "ansan_fix_date", data: dateInput });
+
+      if (error) {
+        console.log(error);
+        alert("저장 실패");
+      } else {
+        setIsFixedDate(true);
+        alert("고정 성공");
+      }
+    } else {
+      const { error } = await supabase
+        .from("routine")
+        .delete()
+        .eq("type", "ansan_fix_date");
+
+      if (error) {
+        console.log(error);
+        alert("해제 실패");
+      } else {
+        setIsFixedDate(false);
+        setDateInput(lastDateInput);
+        alert("해제 성공");
+      }
+    }
+  };
+
   if (openRoom) return <Room posts={posts} />;
   return (
     <>
       <p>{`["2025-09-13","2025-09-14"] 형식으로 똑같이 작성해주세요.(괄호, " 포함)`}</p>
-      <TextField
-        value={dateInput}
-        onChange={(e) => setDateInput(e.target.value)}
-        fullWidth
-      />
-
+      <div className="flex gap-x-3">
+        <TextField
+          value={dateInput}
+          onChange={(e) => setDateInput(e.target.value)}
+          fullWidth
+          className="flex-1"
+        />
+        <Button variant="contained" onClick={onFixClick}>
+          {isFixedDate ? "날짜 고정 해제" : "해당 날짜 고정"}
+        </Button>
+      </div>
       <Button
         variant="contained"
         fullWidth
