@@ -27,6 +27,24 @@ const nextConfig = {
         port: "",
         pathname: "/**", // 👈 Supabase Public Bucket 경로 패턴 추가 (선택 사항이지만 권장)
       },
+      {
+        protocol: "https",
+        hostname: "k.kakaocdn.net", // 카카오 이미지 서버
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "k.kakaocdn.net", // 카카오 이미지 서버
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com", // 구글 프로필 이미지 서버
+        port: "",
+        pathname: "/**",
+      },
       // 만약 다른 외부 이미지 호스트가 있다면 여기에 추가합니다.
     ],
   },

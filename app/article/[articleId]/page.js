@@ -10,6 +10,7 @@ import RandomArticles from "./components/RandomArticles";
 
 import { generateMetadata } from "./metadata";
 import AdBanner from "@/app/zz_components/AdBanner";
+import CommentSection from "./components/CommentSection";
 
 export { generateMetadata };
 
@@ -40,6 +41,7 @@ export default async function Article({ params }) {
               width="100%"
               className="mt-10"
             />
+            <CommentSection articleId={articleId} />
             <Suspense fallback={<SkeletonCategory variant="ArticleList" />}>
               <MoreArticles articleId={articleId} />
             </Suspense>

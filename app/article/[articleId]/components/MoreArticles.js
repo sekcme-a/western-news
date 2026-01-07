@@ -28,7 +28,7 @@ export default async function MoreArticles({ articleId }) {
     });
 
     return (
-      <section className="mt-20">
+      <section className="mt-14 border-t-[1px] border-white pt-6">
         <h3 className="font-bold text-xl">추천 기사</h3>
         <ul>
           {articles?.map((article, index) => (
