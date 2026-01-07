@@ -12,7 +12,7 @@ const Footer = () => {
   ];
   const FOOTER_TWO = ["사업자명 - 서부뉴스", "사업자등록번호 - 710-81-02517"];
   return (
-    <footer className="pt-14 md:pt-20  md:mx-[4vw] lg:mx-[7vw] mx-[12px]">
+    <footer className="  md:mx-[4vw] lg:mx-[7vw] mx-[12px]">
       <div className="mt-18 flex flex-col md:flex-row border-t-2 border-white py-10 px-2 items-center">
         {/* <div className="relative w-full md:w-72 aspect-[3/1] "> */}
         <Image

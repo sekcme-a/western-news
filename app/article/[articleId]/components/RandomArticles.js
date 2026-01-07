@@ -1,5 +1,6 @@
 "use client";
 
+import AdBanner from "@/app/zz_components/AdBanner";
 import ArticleSmallThumbnail from "@/components/thumbnails/AritlceSmallThumbnail";
 import { createBrowserSupabaseClient } from "@/utils/supabase/client";
 import { useEffect } from "react";
@@ -31,6 +32,8 @@ export default function RandomArticles() {
           <ArticleSmallThumbnail article={article} key={index} />
         ))}
       </ul>
+      <AdBanner ad_type="article_right_1" className="my-5" />
+      <AdBanner ad_type="article_right_2" className="my-5" />
     </section>
   );
 }

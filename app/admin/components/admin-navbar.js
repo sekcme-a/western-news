@@ -29,4 +29,8 @@ export const MENU = [
     text: "오늘의 루틴",
     link: "/routine",
   },
+  {
+    text: "광고(배너) 관리",
+    link: "/advertisements",
+  },
 ];

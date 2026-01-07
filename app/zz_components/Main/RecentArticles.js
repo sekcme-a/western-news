@@ -1,57 +1,7 @@
 import { createServerSupabaseClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import Image from "next/image";
-
-// main_1_right 광고를 표시하는 컴포넌트입니다.
-const AdComponent = ({ ad }) => {
-  if (!ad || !ad.image_url) return null;
-
-  // target_url이 있는지 확인
-  const hasTargetUrl = ad.target_url && ad.target_url.startsWith("http");
-
-  const content = (
-    <div
-      style={{
-        position: "relative",
-        width: "100%",
-        aspectRatio: "16/9",
-        overflow: "hidden",
-        borderRadius: "4px",
-      }}
-    >
-      <Image
-        src={ad.image_url}
-        alt={`광고 이미지 - ${ad.ad_type}`}
-        fill
-        sizes="(max-width: 768px) 100vw, 33vw"
-        style={{ objectFit: "contain" }}
-        priority={true}
-      />
-    </div>
-  );
-
-  return (
-    <li className="">
-      {hasTargetUrl ? (
-        // target_url이 있을 경우: <a> 태그를 사용하여 링크 처리
-        <a
-          href={ad.target_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`광고: ${ad.ad_type}으로 이동`}
-        >
-          {content}
-        </a>
-      ) : (
-        // target_url이 없을 경우: <a> 태그 없이 이미지만 표시 (클릭 비활성화)
-        <div aria-label={`광고 이미지: ${ad.ad_type} (링크 없음)`}>
-          {content}
-        </div>
-      )}
-      {/* "광고"라는 텍스트 표기 제거 */}
-    </li>
-  );
-};
+import AdBanner from "../AdBanner";
 
 export default async function RecentArticles() {
   const supabase = await createServerSupabaseClient();
@@ -60,13 +10,8 @@ export default async function RecentArticles() {
   const { data: adData, error: adError } = await supabase
     .from("advertisements")
     .select("image_url, target_url, ad_type")
-    .eq("ad_type", "main_1_right")
+    .eq("ad_type", "main_top_right")
     .maybeSingle();
-
-  if (adError) {
-    console.error(`광고 데이터 조회 실패 (main_1_right): ${adError.message}`);
-  }
-
   const mainRightAd = adData;
 
   try {
@@ -96,7 +41,7 @@ export default async function RecentArticles() {
           </li>
         ))}
         {/* 이곳에 광고 추가 */}
-        {mainRightAd && <AdComponent ad={mainRightAd} />}
+        {mainRightAd && <AdBanner data={mainRightAd} />}
       </ul>
     );
   } catch (err) {

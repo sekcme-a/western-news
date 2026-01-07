@@ -1,61 +1,123 @@
 "use client";
 
-// pages/index.js
-import { useState, useEffect } from "react";
-// 가정: '@/utils/supabase/StorageService'와 '@/utils/supabase/client'는 이미 정의되어 있음
+import { useState, useEffect, useMemo } from "react";
 import { storageService } from "@/utils/supabase/StorageService";
 import { createBrowserSupabaseClient } from "@/utils/supabase/client";
 
-// ✨ AD_TYPES 변경: 객체 배열로 정의하여 한글 텍스트 추가
+// 광고 타입 정의
 const AD_TYPES = [
-  { ad_type: "main_1_right", text: "메인 우측 상단 1번" },
-  { ad_type: "main_2_right", text: "메인 우측 상단 2번" },
-  { ad_type: "main_3_right", text: "메인 우측 상단 3번" },
-  { ad_type: "main_1_middle", text: "메인 중간 1번" },
-  { ad_type: "main_2_middle", text: "메인 중간 2번" },
-  { ad_type: "main_3_middle", text: "메인 중간 3번" },
+  { ad_type: "main_top_right", text: "메인 최상단 우측(16*7)" },
+  { ad_type: "main_top_full", text: "메인 최상단 통배너(728*90)" },
+  { ad_type: "main_body_one_1_middle", text: "메인 중상단 중간배너(720*144)" },
+  { ad_type: "main_body_one_1_right", text: "메인 중상단 우측(16*7)" },
+  { ad_type: "main_body_one_bottom_full", text: "메인 중단 통배너(720*144)" },
+  { ad_type: "main_body_two_bottom_full", text: "메인 중간 통배너2(720*144)" },
+  { ad_type: "main_body_one_2_middle", text: "메인 중하단 중간배너(720*144)" },
+  { ad_type: "main_body_one_2_right", text: "메인 중하단 우측(16*7)" },
+  {
+    ad_type: "main_body_one_2_bottom_full",
+    text: "메인 중하단 통배너(720*144)",
+  },
+  { ad_type: "main_body_two_2_bottom_full", text: "메인 하단 통배너(720*144)" },
+  { ad_type: "main_bottom_full", text: "메인 최하단 통배너(720*144)" },
+  {
+    ad_type: "category_right_middle_1",
+    text: "[카테고리]우측 중단배너1(16*7)",
+  },
+  {
+    ad_type: "category_right_middle_2",
+    text: "[카테고리]우측 중단배너2(16*7)",
+  },
+  {
+    ad_type: "category_right_bottom_1",
+    text: "[카테고리]우측 하단배너1(16*7)",
+  },
+  {
+    ad_type: "category_right_bottom_2",
+    text: "[카테고리]우측 하단배너2(16*7)",
+  },
+  {
+    ad_type: "category_middle_1",
+    text: "[카테고리]기사목록 중간배너1(728*90)",
+  },
+  {
+    ad_type: "category_middle_2",
+    text: "[카테고리]기사목록 중간배너2(728*90)(기사 더보기 클릭시 노출)",
+  },
+  {
+    ad_type: "category_middle_3",
+    text: "[카테고리]기사목록 중간배너3(728*90)(기사 더보기 클릭시 노출)",
+  },
+  {
+    ad_type: "category_middle_4",
+    text: "[카테고리]기사목록 중간배너4(728*90)(기사 더보기 클릭시 노출)",
+  },
+  { ad_type: "category_bottom_full", text: "[카테고리]최하단 통배너(728*90)" },
+  {
+    ad_type: "article_middle_full",
+    text: "[기사본문]중간 통배너(728*90)",
+  },
+  {
+    ad_type: "article_right_1",
+    text: "[기사본문]우측 배너1(16*7)",
+  },
+  {
+    ad_type: "article_right_2",
+    text: "[기사본문]우측 배너2(16*7)",
+  },
+  {
+    ad_type: "article_bottom_full",
+    text: "[기사본문]최하단 통배너(728*90)",
+  },
 ];
 
 export default function AdEditorPage() {
   const supabase = createBrowserSupabaseClient();
   const [ads, setAds] = useState([]);
-  // ✨ 초기값 설정 시 첫 번째 객체의 ad_type 사용
-  const [adType, setAdType] = useState(AD_TYPES[0].ad_type);
+  const [adType, setAdType] = useState("");
   const [targetUrl, setTargetUrl] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [editingAd, setEditingAd] = useState(null);
 
-  // 광고 타입의 ad_type을 받아 해당 객체 전체를 반환하는 헬퍼 함수
-  const getAdTypeObject = (typeValue) => {
-    return AD_TYPES.find((type) => type.ad_type === typeValue);
-  };
+  // 등록 가능한 광고 타입 필터링
+  const availableAdTypes = useMemo(() => {
+    return AD_TYPES.filter((type) => {
+      if (editingAd && editingAd.ad_type === type.ad_type) return true;
+      return !ads.some((ad) => ad.ad_type === type.ad_type);
+    });
+  }, [ads, editingAd]);
 
-  // 광고 타입의 ad_type을 받아 한글 텍스트를 반환하는 헬퍼 함수
-  const getAdTypeText = (typeValue) => {
-    const typeObj = getAdTypeObject(typeValue);
-    return typeObj ? typeObj.text : typeValue;
-  };
+  useEffect(() => {
+    if (!editingAd && availableAdTypes.length > 0) {
+      if (!availableAdTypes.find((t) => t.ad_type === adType)) {
+        setAdType(availableAdTypes[0].ad_type);
+      }
+    } else if (!editingAd && availableAdTypes.length === 0) {
+      setAdType("");
+    }
+  }, [availableAdTypes, editingAd, adType]);
 
   useEffect(() => {
     fetchAds();
   }, []);
 
-  // 1. 광고 데이터 조회 (동일)
   const fetchAds = async () => {
     const { data, error } = await supabase
       .from("advertisements")
       .select("*")
       .order("ad_type", { ascending: true });
 
-    if (error) {
-      console.error("Error fetching ads:", error);
-    } else {
-      setAds(data);
-    }
+    if (error) console.error("Error fetching ads:", error);
+    else setAds(data);
   };
 
-  // 2. 광고 데이터 저장 및 이미지 관리 (로직 동일)
+  const handleResetForm = () => {
+    setEditingAd(null);
+    setTargetUrl("");
+    setImageFile(null); // 이 상태 변경이 input의 value를 비우게 함
+  };
+
   const handleSave = async (e) => {
     e.preventDefault();
     if (!imageFile && !editingAd) {
@@ -81,9 +143,7 @@ export default function AdEditorPage() {
         }
 
         const fileExt = imageFile.name.split(".").pop();
-        // StoragePath 변경: ads/type/file.jpg 형태
         const newStoragePath = `admin/advertisements/${adType}/${Date.now()}.${fileExt}`;
-
         newImageUrl = await storageService.upload(imageFile, newStoragePath);
 
         if (oldImageUrl && oldImageUrl !== newImageUrl) {
@@ -93,102 +153,75 @@ export default function AdEditorPage() {
         newImageUrl = editingAd.image_url;
       }
 
-      let dbCall;
       const dataToSave = {
         image_url: newImageUrl,
         target_url: targetUrl || "",
         ad_type: adType,
       };
 
-      if (editingAd) {
-        dbCall = supabase
-          .from("advertisements")
-          .update(dataToSave)
-          .eq("id", editingAd.id);
-      } else {
-        dbCall = supabase.from("advertisements").insert([dataToSave]);
-      }
+      const { error: dbError } = editingAd
+        ? await supabase
+            .from("advertisements")
+            .update(dataToSave)
+            .eq("id", editingAd.id)
+        : await supabase.from("advertisements").insert([dataToSave]);
 
-      const { error: dbError } = await dbCall;
+      if (dbError) throw dbError;
 
-      if (dbError) {
-        if (imageFile && newImageUrl) {
-          await storageService.remove(newImageUrl);
-        }
-        throw dbError;
-      }
-
-      alert("광고가 성공적으로 저장/업데이트되었습니다.");
-      fetchAds();
-      handleResetForm();
+      alert("광고가 성공적으로 저장되었습니다.");
+      await fetchAds();
+      handleResetForm(); // 저장 후 폼 초기화 및 파일 필드 비우기
     } catch (error) {
-      console.error("Error during save operation:", error.message);
-      alert(`작업 중 오류가 발생했습니다: ${error.message}`);
+      console.error("Error:", error.message);
+      alert(`작업 중 오류 발생: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
 
-  // 3. 광고 삭제 (동일)
   const handleDelete = async (adId, imageUrl) => {
-    if (
-      !confirm(
-        "정말로 이 광고를 삭제하시겠습니까? 관련 이미지 파일도 함께 삭제됩니다."
-      )
-    ) {
-      return;
-    }
+    if (!confirm("정말로 삭제하시겠습니까?")) return;
     setLoading(true);
-
     try {
-      if (imageUrl) {
-        await storageService.remove(imageUrl);
-      }
-
+      if (imageUrl) await storageService.remove(imageUrl);
       const { error } = await supabase
         .from("advertisements")
         .delete()
         .eq("id", adId);
-
-      if (error) {
-        throw error;
-      }
-
-      alert("광고가 성공적으로 삭제되었습니다.");
+      if (error) throw error;
+      alert("삭제되었습니다.");
       fetchAds();
     } catch (error) {
-      console.error("Error deleting ad:", error.message);
-      alert(`광고 삭제 중 오류가 발생했습니다: ${error.message}`);
+      alert(`삭제 중 오류: ${error.message}`);
     } finally {
       setLoading(false);
     }
   };
 
-  // 4. 편집 모드 설정 (동일)
   const handleEdit = (ad) => {
     setEditingAd(ad);
     setAdType(ad.ad_type);
     setTargetUrl(ad.target_url || "");
     setImageFile(null);
-
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // 5. 폼 초기화 (동일)
-  const handleResetForm = () => {
-    setEditingAd(null);
-    setAdType(AD_TYPES[0].ad_type); // ✨ 초기값 변경
-    setTargetUrl("");
-    setImageFile(null);
+  const getAdTypeText = (typeValue) => {
+    const typeObj = AD_TYPES.find((type) => type.ad_type === typeValue);
+    return typeObj ? typeObj.text : typeValue;
   };
 
-  const submitButtonText = editingAd ? "수정 내용 저장" : "새 광고 등록";
-
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial, sans-serif" }}>
+    <div
+      style={{
+        padding: "20px",
+        fontFamily: "Arial, sans-serif",
+        maxWidth: "1000px",
+        margin: "0 auto",
+      }}
+    >
       <h1>✨ 광고 편집 관리 페이지</h1>
 
-      {/* --- 광고 추가/수정 폼 --- */}
       <form
         onSubmit={handleSave}
         style={{
@@ -205,114 +238,109 @@ export default function AdEditorPage() {
             : "새 광고 등록"}
         </h3>
 
-        {editingAd && (
+        {!editingAd && availableAdTypes.length === 0 ? (
           <p style={{ color: "red", fontWeight: "bold" }}>
-            **주의:** 파일을 선택하지 않으면 기존 이미지가 유지됩니다.
+            ⚠️ 모든 위치의 광고가 이미 등록되어 있습니다.
           </p>
+        ) : (
+          <>
+            <div style={{ marginBottom: "15px" }}>
+              <label
+                style={{
+                  display: "block",
+                  fontWeight: "bold",
+                  marginBottom: "5px",
+                }}
+              >
+                광고 타입:
+              </label>
+              <select
+                value={adType}
+                onChange={(e) => setAdType(e.target.value)}
+                disabled={loading || !!editingAd}
+                style={{
+                  padding: "8px",
+                  borderRadius: "4px",
+                  border: "1px solid #ccc",
+                  width: "100%",
+                  backgroundColor: editingAd ? "#eee" : "white",
+                }}
+              >
+                {availableAdTypes.map((type) => (
+                  <option key={type.ad_type} value={type.ad_type}>
+                    {type.text}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div style={{ marginBottom: "15px" }}>
+              <label
+                style={{
+                  display: "block",
+                  fontWeight: "bold",
+                  marginBottom: "5px",
+                }}
+              >
+                이미지/GIF 파일:
+              </label>
+              <input
+                type="file"
+                accept="image/*,.gif"
+                /* 핵심 수정: imageFile이 null일 때 value를 ""로 강제하여 브라우저의 파일 선택 기록을 초기화함 */
+                value={imageFile === null ? "" : undefined}
+                onChange={(e) => setImageFile(e.target.files[0])}
+                disabled={loading}
+                required={!editingAd}
+              />
+            </div>
+
+            <div style={{ marginBottom: "20px" }}>
+              <label
+                style={{
+                  display: "block",
+                  fontWeight: "bold",
+                  marginBottom: "5px",
+                }}
+              >
+                이동 URL:
+              </label>
+              <input
+                type="url"
+                value={targetUrl}
+                onChange={(e) => setTargetUrl(e.target.value)}
+                placeholder="https://example.com"
+                style={{
+                  width: "100%",
+                  padding: "8px",
+                  borderRadius: "4px",
+                  border: "1px solid #ccc",
+                }}
+                disabled={loading}
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              style={{
+                padding: "10px 20px",
+                backgroundColor: "#0070f3",
+                color: "white",
+                border: "none",
+                borderRadius: "4px",
+                cursor: "pointer",
+                marginRight: "10px",
+              }}
+            >
+              {loading
+                ? "처리 중..."
+                : editingAd
+                ? "수정 내용 저장"
+                : "새 광고 등록"}
+            </button>
+          </>
         )}
-
-        <div style={{ marginBottom: "15px" }}>
-          <label
-            style={{
-              display: "block",
-              fontWeight: "bold",
-              marginBottom: "5px",
-            }}
-          >
-            광고 타입:
-          </label>
-          {/* ✨ SELECT 옵션 변경 */}
-          <select
-            value={adType}
-            onChange={(e) => setAdType(e.target.value)}
-            disabled={loading || editingAd}
-            style={{
-              padding: "8px",
-              borderRadius: "4px",
-              border: "1px solid #ccc",
-              backgroundColor: editingAd ? "#eee" : "white",
-            }}
-          >
-            {AD_TYPES.map((type) => (
-              // value는 DB에 저장되는 ad_type, 사용자에게는 text를 보여줌
-              <option key={type.ad_type} value={type.ad_type}>
-                {type.text}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div style={{ marginBottom: "15px" }}>
-          <label
-            style={{
-              display: "block",
-              fontWeight: "bold",
-              marginBottom: "5px",
-            }}
-          >
-            이미지/GIF 파일:
-          </label>
-          <input
-            type="file"
-            accept="image/*,.gif"
-            onChange={(e) => setImageFile(e.target.files[0])}
-            disabled={loading}
-            required={!editingAd}
-          />
-          {imageFile && (
-            <p style={{ fontSize: "12px", color: "#555" }}>
-              선택된 새 파일: **{imageFile.name}**
-            </p>
-          )}
-          {editingAd && !imageFile && (
-            <p style={{ fontSize: "12px", color: "blue" }}>
-              현재 이미지 URL: **{editingAd.image_url.substring(0, 50)}...**
-              (파일 미선택 시 유지됨)
-            </p>
-          )}
-        </div>
-
-        <div style={{ marginBottom: "20px" }}>
-          <label
-            style={{
-              display: "block",
-              fontWeight: "bold",
-              marginBottom: "5px",
-            }}
-          >
-            클릭 시 이동할 URL:
-          </label>
-          <input
-            type="url"
-            value={targetUrl}
-            onChange={(e) => setTargetUrl(e.target.value)}
-            placeholder="https://example.com"
-            style={{
-              width: "100%",
-              maxWidth: "400px",
-              padding: "8px",
-              borderRadius: "4px",
-              border: "1px solid #ccc",
-            }}
-            disabled={loading}
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: "#0070f3",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            marginRight: "10px",
-          }}
-        >
-          {loading ? "처리 중..." : submitButtonText}
-        </button>
 
         {editingAd && (
           <button
@@ -322,10 +350,8 @@ export default function AdEditorPage() {
             style={{
               padding: "10px 20px",
               backgroundColor: "#ccc",
-              color: "black",
-              border: "none",
               borderRadius: "4px",
-              cursor: "pointer",
+              border: "none",
             }}
           >
             편집 취소
@@ -333,8 +359,7 @@ export default function AdEditorPage() {
         )}
       </form>
 
-      {/* --- 기존 광고 목록 --- */}
-      <h2>📄 현재 등록된 광고 목록</h2>
+      <h2>📄 현재 등록된 광고 목록 ({ads.length}개)</h2>
       <table
         style={{
           width: "100%",
@@ -344,9 +369,9 @@ export default function AdEditorPage() {
       >
         <thead>
           <tr style={{ backgroundColor: "#e9ecef" }}>
-            <th style={tableHeaderStyle}>광고 타입 (한글)</th> {/* ✨ 변경 */}
-            <th style={tableHeaderStyle}>이미지 미리보기</th>
-            <th style={tableHeaderStyle}>이동 URL</th>
+            <th style={tableHeaderStyle}>광고 타입</th>
+            <th style={tableHeaderStyle}>이미지</th>
+            <th style={tableHeaderStyle}>URL</th>
             <th style={tableHeaderStyle}>액션</th>
           </tr>
         </thead>
@@ -354,47 +379,32 @@ export default function AdEditorPage() {
           {ads.map((ad, index) => (
             <tr
               key={ad.id}
-              style={{
-                backgroundColor: index % 2 === 0 ? "#ffffff" : "#f8f9fa",
-                outline:
-                  editingAd && editingAd.id === ad.id
-                    ? "2px solid orange"
-                    : "none",
-              }}
+              style={{ backgroundColor: index % 2 === 0 ? "#fff" : "#f8f9fa" }}
             >
-              {/* ✨ getAdTypeText 헬퍼 함수를 사용하여 한글 표시 */}
-              <td style={tableCellStyle}>**{getAdTypeText(ad.ad_type)}**</td>
+              <td style={tableCellStyle}>
+                <strong>{getAdTypeText(ad.ad_type)}</strong>
+              </td>
               <td style={tableCellStyle}>
                 <img
                   src={ad.image_url}
-                  alt={ad.ad_type}
+                  alt=""
                   style={{
-                    maxHeight: "100px",
+                    maxHeight: "60px",
                     maxWidth: "100px",
                     objectFit: "contain",
                   }}
                 />
               </td>
-              <td style={tableCellStyle}>
-                <a
-                  href={ad.target_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {ad.target_url.substring(0, 50)}...
-                </a>
-              </td>
+              <td style={tableCellStyle}>{ad.target_url}</td>
               <td style={tableCellStyle}>
                 <button
                   onClick={() => handleEdit(ad)}
-                  disabled={loading}
                   style={{ ...actionButtonStyle, backgroundColor: "#28a745" }}
                 >
                   편집
                 </button>
                 <button
                   onClick={() => handleDelete(ad.id, ad.image_url)}
-                  disabled={loading}
                   style={{
                     ...actionButtonStyle,
                     backgroundColor: "#dc3545",
@@ -412,24 +422,20 @@ export default function AdEditorPage() {
   );
 }
 
-// 테이블 스타일 정의 (동일)
 const tableHeaderStyle = {
   border: "1px solid #ddd",
   padding: "12px",
   textAlign: "left",
 };
-
 const tableCellStyle = {
   border: "1px solid #ddd",
   padding: "12px",
-  wordBreak: "break-all",
+  fontSize: "14px",
 };
-
 const actionButtonStyle = {
   color: "white",
   border: "none",
-  padding: "8px 10px",
+  padding: "6px 10px",
   borderRadius: "4px",
   cursor: "pointer",
-  fontSize: "12px",
 };

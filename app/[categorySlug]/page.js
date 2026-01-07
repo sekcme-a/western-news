@@ -8,6 +8,7 @@ import { Suspense } from "react";
 import SkeletonCategory from "./components/SkeletonCategory";
 import { categories } from "@/utils/data/categories";
 import { createMetadata } from "@/utils/metadata";
+import AdBanner from "../zz_components/AdBanner";
 
 export async function generateMetadata({ params }) {
   const { categorySlug } = params;
@@ -41,6 +42,9 @@ export default function CategoryPage({ params }) {
             <Suspense fallback={<SkeletonCategory variant="HeadlineList" />}>
               <HeadlineList categorySlug={categorySlug} />
             </Suspense>
+
+            <AdBanner ad_type="category_right_middle_1" className="my-5" />
+            <AdBanner ad_type="category_right_middle_2" className="my-5" />
             <div className="w-full h-8 border-t-[1px] border-white" />
             <Suspense fallback={<></>}>
               <RightBodyOne
@@ -49,8 +53,16 @@ export default function CategoryPage({ params }) {
                 limit={5}
               />
             </Suspense>
+            <AdBanner ad_type="category_right_bottom_1" className="my-5" />
+            <AdBanner ad_type="category_right_bottom_2" className="my-5" />
           </div>
         </div>
+
+        <AdBanner
+          ad_type="category_bottom_full"
+          width="100%"
+          className="mt-10"
+        />
       </main>
       <Footer />
     </>

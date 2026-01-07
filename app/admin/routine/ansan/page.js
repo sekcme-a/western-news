@@ -84,14 +84,21 @@ export default function AnsanBodo({ setErrors }) {
           );
           const data = await res.json();
 
+          // 제목 앞의 "안산시, " 제거 로직 추가
+          const cleanedArticles = (data?.articles ?? []).map((article) => ({
+            ...article,
+            title: article.title.startsWith("안산시, ")
+              ? article.title.replace("안산시, ", "")
+              : article.title,
+          }));
+
           setLog((prev) => [
             ...prev,
-            `[성공] ${date} 보도자료 ${data?.articles?.length}개 확인`,
+            `[성공] ${date} 보도자료 ${cleanedArticles.length}개 확인`,
           ]);
-          list = [...list, ...(data?.articles ?? [])];
-          console.log(list);
-          setPosts((prev) => [...prev, ...(data?.articles ?? [])]);
-          if (data?.articles?.length === 0)
+          list = [...list, ...cleanedArticles];
+          setPosts((prev) => [...prev, ...cleanedArticles]);
+          if (cleanedArticles.length === 0)
             navigator.clipboard.writeText("null");
         } catch (error) {
           console.log(error);

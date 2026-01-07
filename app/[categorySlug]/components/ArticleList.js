@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import MoreArticles from "./MoreArticles";
 import ArticleThumbnail from "@/components/thumbnails/ArticleThumbnail";
+import AdBanner from "@/app/zz_components/AdBanner";
 
 export default async function ArticleList({ categorySlug }) {
   const supabase = await createServerSupabaseClient();
@@ -44,6 +45,9 @@ export default async function ArticleList({ categorySlug }) {
           {articles.map((article, index) => (
             <ArticleThumbnail key={index} article={article} />
           ))}
+          <li>
+            <AdBanner ad_type="category_middle_1" className="my-5" />
+          </li>
         </ul>
         <MoreArticles categorySlug={categorySlug} />
       </section>

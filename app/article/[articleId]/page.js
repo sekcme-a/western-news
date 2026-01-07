@@ -9,6 +9,7 @@ import SkeletonCategory from "@/app/[categorySlug]/components/SkeletonCategory";
 import RandomArticles from "./components/RandomArticles";
 
 import { generateMetadata } from "./metadata";
+import AdBanner from "@/app/zz_components/AdBanner";
 
 export { generateMetadata };
 
@@ -34,6 +35,11 @@ export default async function Article({ params }) {
         <div className="pt-14 md:pt-20 md:flex  md:mx-[4vw] lg:mx-[7vw] mx-[12px]">
           <div className="md:w-3/4 mt-10 md:mr-5">
             <ArticleContent article={article} />
+            <AdBanner
+              ad_type="article_middle_full"
+              width="100%"
+              className="mt-10"
+            />
             <Suspense fallback={<SkeletonCategory variant="ArticleList" />}>
               <MoreArticles articleId={articleId} />
             </Suspense>
@@ -41,6 +47,13 @@ export default async function Article({ params }) {
           <div className="md:w-1/4 mt-10">
             <RandomArticles />
           </div>
+        </div>
+        <div className=" md:mx-[4vw] lg:mx-[7vw] mx-[12px]">
+          <AdBanner
+            ad_type="article_bottom_full"
+            width="100%"
+            className="mt-10"
+          />
         </div>
         <Footer />
       </main>
