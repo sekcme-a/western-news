@@ -33,4 +33,8 @@ export const MENU = [
     text: "광고(배너) 관리",
     link: "/advertisements",
   },
+  {
+    text: "지면 PDF 관리",
+    link: "/articles/pdf",
+  },
 ];

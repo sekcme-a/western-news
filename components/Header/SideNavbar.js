@@ -212,6 +212,18 @@ export default function SideNavbar({ categoriess, onClick }) {
                   {categories.map((category) => (
                     <CategoryItem key={category.id} category={category} />
                   ))}
+
+                  <li className="mb-1">
+                    <div className="flex items-center justify-between">
+                      <a
+                        href="/article/pdf"
+                        onClick={closeSidebar}
+                        className="flex-grow p-3 rounded-lg text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition duration-150 font-medium"
+                      >
+                        PDF 지면 보기
+                      </a>
+                    </div>
+                  </li>
                 </ul>
               )}
             </nav>
