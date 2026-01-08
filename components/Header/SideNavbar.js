@@ -6,6 +6,7 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { useState, useRef, useEffect } from "react";
 import { createBrowserSupabaseClient } from "@/utils/supabase/client";
 import { getCategories } from "@/utils/supabase/getCategories";
+import Link from "next/link";
 
 const supabase = createBrowserSupabaseClient();
 
@@ -214,14 +215,12 @@ export default function SideNavbar({ categoriess, onClick }) {
                   ))}
 
                   <li className="mb-1">
-                    <div className="flex items-center justify-between">
-                      <a
-                        href="/article/pdf"
-                        onClick={closeSidebar}
-                        className="flex-grow p-3 rounded-lg text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition duration-150 font-medium"
-                      >
-                        PDF 지면 보기
-                      </a>
+                    <div className="flex-grow p-3 rounded-lg text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition duration-150 font-medium">
+                      <Link href="/article/pdf" onClick={closeSidebar}>
+                        <div className="flex items-center justify-between">
+                          PDF 지면 보기
+                        </div>
+                      </Link>
                     </div>
                   </li>
                 </ul>

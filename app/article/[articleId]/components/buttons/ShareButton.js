@@ -17,6 +17,7 @@ export default function ShareButton({ title, text, imgSrc }) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
   const KAKAO_KEY = process.env.NEXT_PUBLIC_KAKAO_KEY;
+  // const KAKAO_KEY = "077a285804d23fba507ceef046746ce8";
 
   useEffect(() => {
     // 클라이언트 사이드에서만 URL 가져오기
@@ -30,7 +31,7 @@ export default function ShareButton({ title, text, imgSrc }) {
         window.Kakao.init(KAKAO_KEY);
       }
     }
-  }, [window.Kakao]);
+  }, [window?.Kakao]);
 
   // 1. 카카오톡 공유
   const handleKakaoShare = () => {
