@@ -4,6 +4,7 @@ import { ThemeProvider } from "@mui/material/styles";
 import theme from "@/config/theme";
 import AuthProvider from "@/providers/AuthProvider";
 import metadata from "./metadata";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,11 @@ export default async function RootLayout({ children }) {
           `bg-[#1f1f1f] text-white vsc-initialized ${geistSans.variable} ${geistMono.variable}`,
         ]}
       >
+        <Script
+          src="https://t1.kakaocdn.net/kakao_js_sdk/2.7.9/kakao.min.js"
+          integrity="sha384-JpLApTkB8lPskhVMhT+m5Ln8aHlnS0bsIexhaak0jOhAkMYedQoVghPfSpjNi9K1"
+          crossorigin="anonymous"
+        />
         <AuthProvider>
           <ThemeProvider theme={theme}>{children}</ThemeProvider>
         </AuthProvider>

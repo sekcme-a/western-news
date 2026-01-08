@@ -33,7 +33,7 @@ export default function MyPageNavbar({ selectedMenu }) {
               selectedMenu === menu.name ? "font-bold" : "text-gray-300"
             }`}
           >
-            {menu.name}
+            <Link href={menu.link}>{menu.name}</Link>
           </li>
         ))}
       </ul>

@@ -36,6 +36,7 @@ export default async function Article({ params }) {
         <div className="pt-14 md:pt-20 md:flex  md:mx-[4vw] lg:mx-[7vw] mx-[12px]">
           <div className="md:w-3/4 mt-10 md:mr-5">
             <ArticleContent article={article} />
+            <div className="mt-10 flex justify-center"></div>
             <AdBanner
               ad_type="article_middle_full"
               width="100%"

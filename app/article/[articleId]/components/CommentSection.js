@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuth } from "@/providers/AuthProvider";
 import { createBrowserSupabaseClient } from "@/utils/supabase/client";
 import { useState, useEffect, useCallback } from "react";
 
@@ -100,7 +101,8 @@ const formatRelativeTime = (dateString) => {
 export default function CommentSection({ articleId }) {
   const supabase = createBrowserSupabaseClient();
   const [comments, setComments] = useState([]);
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
+  const { user, isLoading: authLoading } = useAuth();
   const [loading, setLoading] = useState(true);
   const [newComment, setNewComment] = useState("");
 
@@ -158,18 +160,19 @@ export default function CommentSection({ articleId }) {
 
   // 초기 데이터 로드
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      const currentUser = session?.user || null;
-      setUser(currentUser);
-      // 세션 정보를 바로 fetchComments에 전달하여 myVote가 누락되지 않게 함
-      await fetchComments(currentUser);
-    };
-    fetchData();
-  }, [articleId, fetchComments, supabase.auth]);
+    // const fetchData = async () => {
+    //   setLoading(true);
+    //   const {
+    //     data: { session },
+    //   } = await supabase.auth.getSession();
+    //   const currentUser = session?.user || null;
+    //   setUser(currentUser);
+    //   // 세션 정보를 바로 fetchComments에 전달하여 myVote가 누락되지 않게 함
+    //   await fetchComments(currentUser);
+    // };
+    // fetchData();
+    if (!authLoading) fetchComments(user);
+  }, [articleId, authLoading, user]);
 
   const handleCreateComment = async (e) => {
     e.preventDefault();

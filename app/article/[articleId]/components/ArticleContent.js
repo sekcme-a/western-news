@@ -1,5 +1,9 @@
 import Image from "next/image";
 import QuillArticle from "./QuillArticle";
+import BookmarkButton from "./buttons/BookmarkButton";
+import ShareButton from "./buttons/ShareButton";
+import { htmlToPlainString } from "@/utils/lib/htmlToPlainString";
+import DeleteDuplicates from "@/utils/DeleteDuplicateArticles";
 
 export default function ArticleContent({ article }) {
   const formatDate = (isoString) => {
@@ -23,6 +27,20 @@ export default function ArticleContent({ article }) {
       <p className="text-xs text-gray-400 mt-3">
         {formatDate(article.created_at)}
       </p>
+
+      <div className="flex mt-5 mb-3 justify-end">
+        <div className="flex gap-x-3">
+          <BookmarkButton articleId={article.id} />
+          <ShareButton
+            title={article.title}
+            text={htmlToPlainString(article.content)}
+            imgSrc={
+              article.thumbnail_image ??
+              "https://western-news.co.kr/images/og_logo.png"
+            }
+          />
+        </div>
+      </div>
       {/* <div className="flex items-center w-full justify-center my-10">
         <div className="relative w-full max-w-xl aspect-video">
           <Image
