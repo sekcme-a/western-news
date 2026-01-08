@@ -16,9 +16,7 @@ import ShareOutlinedIcon from "@mui/icons-material/ShareOutlined";
 export default function ShareButton({ title, text, imgSrc }) {
   const [isOpen, setIsOpen] = useState(false);
   const [currentUrl, setCurrentUrl] = useState("");
-
-  // 카카오 앱 키 (환경변수로 관리하는 것을 권장합니다)
-  const KAKAO_KEY = "077a285804d23fba507ceef046746ce8";
+  const KAKAO_KEY = process.env.NEXT_PUBLIC_KAKAO_KEY;
 
   useEffect(() => {
     // 클라이언트 사이드에서만 URL 가져오기
@@ -59,6 +57,9 @@ export default function ShareButton({ title, text, imgSrc }) {
           },
         ],
       });
+      // window.Kakao.Share.sendScrap({
+      //   requestUrl: "https://western-news.co.kr",
+      // });
     }
   };
 
