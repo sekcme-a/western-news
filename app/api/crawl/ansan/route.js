@@ -11,7 +11,7 @@ export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const startParam = searchParams.get("start");
   const endParam = searchParams.get("end");
-  const startPage = searchParams.get("page");
+  const startPage = searchParams.get("page") || "1"; // 기본값 1 설정
 
   const startDate = startParam ? parseDate(startParam) : null;
   const endDate = endParam ? parseDate(endParam) : null;
@@ -19,7 +19,7 @@ export async function GET(request) {
   const maxArticles = 50;
   let currentPage = startPage.toString() === "0" ? 1 : parseInt(startPage);
   let articles = [];
-  let shouldStop = false; // ✅ 날짜 범위 벗어나면 종료
+  let shouldStop = false;
 
   try {
     while (articles.length < maxArticles && !shouldStop) {
@@ -40,30 +40,24 @@ export async function GET(request) {
         const row = rows.eq(i);
         const tds = row.find("td");
         const number = tds.eq(0).text().trim();
-        const title = tds.eq(1).find("a").text().trim();
         const onclick = tds.eq(1).find("a").attr("onclick") || "";
         const dateStr = tds.eq(4).text().trim();
         const date = parseDate(dateStr);
 
-        // 번호 없는 공지 등은 스킵
         if (isNaN(parseInt(number))) continue;
 
-        // ✅ 최신순이므로 startDate보다 이전이면 루프 종료
         if (startDate && date < startDate) {
           shouldStop = true;
           break;
         }
 
-        // ✅ endDate보다 이후(너무 최신)는 스킵
         if (endDate && date > endDate) continue;
 
-        // ✅ detail URL 파싱
         const match = onclick?.match(/fnGoDetail\(\s*(\d+)\s*\)/);
         if (!match) continue;
         const seq = match[1];
         const detailUrl = `https://www.ansan.go.kr/www/common/bbs/selectBbsDetail.do?key=274&bbs_code=B0238&bbs_seq=${seq}&currentPage=${currentPage}`;
 
-        // 상세 페이지 크롤링
         const detailRes = await axios.get(detailUrl);
         const $$ = cheerio.load(detailRes.data);
 
@@ -76,12 +70,20 @@ export async function GET(request) {
 
         const detailTitle = subjectRow.find("td").text().trim();
         let content = contentRow.find("td").html()?.trim() || "";
+
+        // HTML 태그 처리 및 텍스트 추출
         content = content
           .replace(/<br\s*\/?>/g, "\n")
           .replace(/<[^>]+>/g, "")
           .trim();
 
-        // ✅ 이미지 가져오기
+        /**
+         * ✅ "담당 부서" 필터링 로직 추가
+         * 마지막 줄에 위치한 "담당 부서: ..." 패턴을 찾아 삭제합니다.
+         */
+        const departmentPattern = /\n\s*담당\s?부서:[\s\S]*$/;
+        content = content.replace(departmentPattern, "").trim();
+
         const images = [];
         $$(".p-photo__wrap img").each((_, el) => {
           const src = $$(el).attr("src");
@@ -93,7 +95,6 @@ export async function GET(request) {
           }
         });
 
-        // ✅ 첨부파일 가져오기
         const files = [];
         $$(".p-attach__item a").each((_, el) => {
           const fileOnclick = $$(el).attr("onclick");
@@ -117,13 +118,8 @@ export async function GET(request) {
         addedThisPage++;
       }
 
-      // ✅ startDate보다 오래된 글을 만나면 루프 즉시 종료
       if (shouldStop) break;
-
-      // ✅ 게시글 추가 없으면 종료
       if (addedThisPage === 0 && articles.length > 0) break;
-
-      // ✅ 단일 페이지 조회 요청일 경우 (page param 지정 시)
       if (startPage.toString() !== "0") break;
 
       currentPage++;

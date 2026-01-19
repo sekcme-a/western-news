@@ -142,7 +142,7 @@ export default function PdfAdminPage() {
         {papers.map((paper) => (
           <div
             key={paper.id}
-            className="flex justify-between items-center bg-[#2a2a2a] p-4 rounded border border-[#3a3a3a]"
+            className="flex justify-between items-center p-4 rounded border border-[#3a3a3a]"
           >
             <div>
               <p className="font-bold">{paper.title}</p>
@@ -155,13 +155,13 @@ export default function PdfAdminPage() {
                 href={paper.pdf_url}
                 target="_blank"
                 rel="noreferrer"
-                className="text-sm bg-[#3a3a3a] px-3 py-1 rounded"
+                className="text-sm  px-3 py-1 rounded"
               >
                 보기
               </a>
               <button
                 onClick={() => deletePaper(paper)} // 객체 전체를 전달하도록 변경
-                className="text-sm bg-red-900 hover:bg-red-700 px-3 py-1 rounded transition"
+                className="text-sm bg-red-900 text-white hover:bg-red-700 px-3 py-1 rounded transition"
               >
                 삭제
               </button>

@@ -29,7 +29,15 @@ async function crawlViewPage(viewUrl) {
     const title = $("div.bod_view h4").text().trim();
     const mT10 = $("div.view_cont .mT10").first();
     mT10.find("br").replaceWith("\n");
-    const content = mT10.text().trim();
+
+    let content = mT10.text().trim();
+
+    /**
+     * ✅ "담당 부서" 필터링 로직
+     * 마지막 줄 근처에서 "담당 부서"라는 문구가 시작되면 그 이후를 모두 삭제합니다.
+     */
+    const departmentPattern = /\n\s*담당\s?부서:[\s\S]*$/;
+    content = content.replace(departmentPattern, "").trim();
 
     const images = [];
     $("div.view_cont img").each((_, img) => {

@@ -16,17 +16,17 @@ export async function generateMetadata({ params }) {
 
   return {
     title: data.title,
-    description: `${data.title} ${plainContent}`.slice(0, 100),
+    description: `${plainContent}`.slice(0, 100),
     openGraph: {
       title: data.title,
-      description: `${data.title} ${plainContent}`.slice(0, 100),
+      description: `${plainContent}`.slice(0, 100),
       images: data.thumbnail_image
         ? [data.thumbnail_image]
         : ["/images/og_logo.png"],
     },
     twitter: {
       title: data.title,
-      description: `${data.title} ${plainContent}`.slice(0, 100),
+      description: `${plainContent}`.slice(0, 100),
       images: data.thumbnail_image
         ? [data.thumbnail_image]
         : ["/images/og_logo.png"],
