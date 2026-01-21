@@ -14,10 +14,12 @@ export const MENU = [
       {
         text: "안산 보도자료",
         link: "/routine/ansan",
+        role: "super_admin",
       },
       {
         text: "시흥 보도자료",
         link: "/routine/sihueng",
+        role: "super_admin",
       },
     ],
   },
@@ -28,6 +30,7 @@ export const MENU = [
   {
     text: "오늘의 루틴",
     link: "/routine",
+    role: "super_admin",
   },
   {
     text: "광고(배너) 관리",

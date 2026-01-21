@@ -207,7 +207,7 @@ export default function MainArticleSetterDialog({
                     category_slug, 
                     article_id,
                     articles ( title )
-                `
+                `,
         )
         .eq("is_main", true); // ⭐️ 오직 is_main이 true인 레코드만 조회
 
@@ -312,7 +312,7 @@ export default function MainArticleSetterDialog({
             // 기사가 바뀌었고, 이전에 메인 기사로 설정된 연결 레코드가 있는 경우
             oldMainIdsToDeactivate.push(current_mapping_id);
           }
-        }
+        },
       );
 
       if (oldMainIdsToDeactivate.length > 0) {
@@ -320,7 +320,7 @@ export default function MainArticleSetterDialog({
           supabase
             .from(MAIN_MAPPING_TABLE)
             .update({ is_main: false })
-            .in("id", oldMainIdsToDeactivate)
+            .in("id", oldMainIdsToDeactivate),
         );
       }
 
@@ -350,7 +350,7 @@ export default function MainArticleSetterDialog({
             .upsert(newMainInsertsOrUpdates, {
               onConflict: "article_id, category_slug",
               ignoreDuplicates: false,
-            })
+            }),
         );
       }
 
@@ -380,7 +380,7 @@ export default function MainArticleSetterDialog({
           fontSize: "1.25rem",
         }}
       >
-        메인 기사 설정 (is_main 필드 기반)
+        {`메인 기사 설정 (is_main 필드 기반)`}
       </DialogTitle>
 
       <DialogContent dividers sx={{ p: 0 }}>

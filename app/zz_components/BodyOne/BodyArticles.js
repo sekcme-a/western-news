@@ -13,7 +13,7 @@ export default async function BodyArticles({ categorySlug }) {
       title,
       content,
       article_categories!inner(category_slug)
-    `
+    `,
       )
       .eq("article_categories.category_slug", categorySlug)
       .order("created_at", { ascending: false })
@@ -40,7 +40,7 @@ export default async function BodyArticles({ categorySlug }) {
       thumbnail_image,
       content,
       article_categories!inner(category_slug)
-    `
+    `,
       )
       .eq("article_categories.category_slug", categorySlug)
       .order("created_at", { ascending: false })
@@ -48,7 +48,7 @@ export default async function BodyArticles({ categorySlug }) {
     if (imgError) throw new Error(imgError.message);
     if (!dataWithImg) throw new Error("No articles found");
 
-    const plainContent = dataWithImg[0].content
+    const plainContent = dataWithImg[0]?.content
       .replace(/<br\s*\/?>/gi, "\n") // <br>을 줄바꿈으로 변환
       .replace(/<[^>]+>/g, "") // 모든 HTML 태그 제거
       .replace(/\n\s*\n/g, "\n\n") // 연속 줄바꿈 정리
@@ -78,13 +78,13 @@ export default async function BodyArticles({ categorySlug }) {
                 <h4 className="text-xl font-semibold mb-2 line-clamp-2">
                   {imgArticle.title}
                 </h4>
-                <p className="text-sm text-[#999] line-clamp-1 ">
+                <p className="text-sm text-[#999] line-clamp-2 ">
                   {imgArticle.content}
                 </p>
                 <div className="relative w-[30%] h-20 rounded-xl overflow-hidden mt-3">
                   <Image
                     src={imgArticle.thumbnail_image ?? "/images/og_logo.png"}
-                    alt={imgArticle.title}
+                    alt={imgArticle.title ?? "기사 이미지"}
                     fill
                     objectFit="cover"
                   />

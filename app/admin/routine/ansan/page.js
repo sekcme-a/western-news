@@ -6,9 +6,19 @@ import { Button, TextField } from "@mui/material";
 import Room from "./Room";
 import { addSession } from "../handleSession";
 
-const TEXT = `각 기사 제목에 맞는 카테고리를 아래의 카테고리 목록중에서 1개씩 골라줘. 그리고 차례대로 배열로 만들어줘.
-JSON형식의 코드로만 대답하고, 다른 부가적인 설명이나 말 하지마.
-배열 형식: ["society","lifestyle","",...]\n`;
+const TEXT = `역할: 너는 분류기다. 출력은 데이터다.
+
+각 기사 제목에 대해 아래 카테고리 목록 중 정확히 1개를 선택해라.
+기사 제목의 순서를 반드시 유지해라.
+
+출력 규칙:
+- 반드시 JSON 배열만 코드블럭에 출력
+- 마크다운, 설명, 문장, 주석, 공백 텍스트 일절 금지
+
+배열 형식 예시:
+["society","lifestyle","sports"]
+
+\n`;
 
 export default function AnsanBodo({ setErrors }) {
   const supabase = createBrowserSupabaseClient();
@@ -80,7 +90,7 @@ export default function AnsanBodo({ setErrors }) {
           setLog((prev) => [...prev, `${date} 보도자료 크롤링 중...`]);
 
           const res = await fetch(
-            `/api/crawl/ansan?start=${date}&end=${date}&page=0`
+            `/api/crawl/ansan?start=${date}&end=${date}&page=0`,
           );
           const data = await res.json();
 
@@ -114,9 +124,9 @@ export default function AnsanBodo({ setErrors }) {
       }
       const titles = list.map((item) => item.title);
       setAiText(
-        `${TEXT}카테고리 목록: ${categoriesText}\r기사 제목 목록: ${JSON.stringify(
-          titles
-        )}`
+        `${TEXT}카테고리 목록: ${categoriesText}\n\n기사 제목 목록: ${JSON.stringify(
+          titles,
+        )}`,
       );
     } catch (error) {
       console.log(error);
@@ -179,7 +189,7 @@ export default function AnsanBodo({ setErrors }) {
               day: "2-digit",
             })
             .replace(/\. /g, "-")
-            .replace(/\.$/, "")
+            .replace(/\.$/, ""),
         );
       }
       current.setDate(current.getDate() + 1);
@@ -223,57 +233,81 @@ export default function AnsanBodo({ setErrors }) {
   let newArticleIds = [];
   const onSaveChange = async (e) => {
     try {
+      const slugValues = JSON.parse(e.target.value);
       setSlugs(e.target.value);
-      console.log(posts);
-      const datas = posts.map((item) => ({
-        title: item.title,
-        content: convertTextToQuillHTML(cleanText(item.content)),
-        images_bodo: item.images,
-        author: "심수연 기자 bkshim21@naver.com",
-        thumbnail_image: item.images?.[0] ?? null,
-      }));
 
-      const { data } = await supabase
+      // 1. 현재 시점 기준 생성
+      const now = new Date();
+
+      // 2. 데이터 가공 (created_at에 시차 부여)
+      const datas = posts.map((item, index) => {
+        // 각 기사마다 1초(1000ms)씩 더해서 생성 시간이 겹치지 않게 함
+        const timestamp = new Date(now.getTime() + index * 1000).toISOString();
+
+        return {
+          title: item.title,
+          content: convertTextToQuillHTML(cleanText(item.content)),
+          images_bodo: item.images,
+          author: "심수연 기자 bkshim21@naver.com",
+          thumbnail_image: item.images?.[0] ?? null,
+          created_at: timestamp, // 명시적으로 시간 설정
+        };
+      });
+
+      // 3. articles 테이블 insert
+      const { data: insertedArticles, error: articleError } = await supabase
         .from("articles")
         .insert(datas)
         .select("id");
-      newArticleIds = data.map((item) => item.id);
-      const s = JSON.parse(e.target.value);
-      const slugList = data.map((item, index) => ({
+
+      if (articleError) throw articleError;
+
+      const newArticleIds = insertedArticles.map((item) => item.id);
+
+      // 4. 카테고리 매핑 데이터 생성
+      // (기존 slugList, general, ansan 리스트 생성)
+      const slugList = insertedArticles.map((item, index) => ({
         article_id: item.id,
-        category_slug: s[index],
+        category_slug: slugValues[index],
       }));
-      //general 는 상위카테고리라 무조건 포함
-      const generalSlugList = data.map((item, index) => ({
+
+      const generalSlugList = insertedArticles.map((item) => ({
         article_id: item.id,
         category_slug: "general",
       }));
-      const ansanSlugList = data.map((item, index) => ({
+
+      const ansanSlugList = insertedArticles.map((item) => ({
         article_id: item.id,
         category_slug: "ansan",
       }));
-      await supabase
+
+      // 5. article_categories 테이블 insert
+      const { error: categoryError } = await supabase
         .from("article_categories")
         .insert([...slugList, ...generalSlugList, ...ansanSlugList]);
 
+      if (categoryError) throw categoryError;
+
+      // 6. 성공 알림 및 UI 업데이트
       addSession("success", {
         title: `[안산 보도자료 저장 성공] 총 ${datas.length}개의 보도자료를 저장했습니다.`,
         articles: datas,
         articleSlugs: slugList,
       });
+
       setOpenRoom(true);
     } catch (error) {
-      console.log(error);
-      if (error.message.includes("JSON")) {
+      console.error("Save Error:", error);
+
+      if (error.message?.includes("JSON")) {
         addSession("error", {
           title: `안산 보도자료 카테고리 선택 실패`,
-          message: `멍청한 AI가 안산의 보도자료 카테고리 선택을 실패했습니다.\n카테고리가 없는 기사들의 카테고리를 지정해주세요.`,
-          articleIds: newArticleIds,
+          message: `카테고리 데이터 형식이 올바르지 않습니다. 다시 시도해주세요.`,
         });
       } else {
         addSession("error", {
           title: `안산 보도자료 저장 실패`,
-          message: `코드상 문제로 저장에 실패했습니다.`,
+          message: `서버 통신 중 오류가 발생했습니다: ${error.message}`,
         });
       }
     }
@@ -340,7 +374,7 @@ export default function AnsanBodo({ setErrors }) {
           navigator.clipboard.writeText(aiText);
         }}
       >
-        전지전능한 챗GPT 문구 복사
+        문구 복사
       </Button>
       <TextField
         fullWidth

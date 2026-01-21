@@ -21,7 +21,7 @@ export default async function ListPage({ params, searchParams }) {
 
   if (search) {
     countQuery = countQuery.or(
-      `title.ilike.%${search}%,content.ilike.%${search}%`
+      `title.ilike.%${search}%,content.ilike.%${search}%`,
     );
   }
 

@@ -27,11 +27,17 @@ import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import CurrencyRubleIcon from "@mui/icons-material/CurrencyRuble";
 import Image from "next/image";
 import { MENU } from "./admin-navbar";
+import { useAuth } from "@/providers/AuthProvider";
+import { createBrowserSupabaseClient } from "@/utils/supabase/client";
+import { useEffect } from "react";
 
 const NavBar = () => {
+  const { user } = useAuth();
+  const supabase = createBrowserSupabaseClient();
   const router = useRouter();
   const [openedItem, setOpenedItem] = useState(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [userRole, setUserRole] = useState(null);
 
   const handleItemClick = (item) => {
     setOpenedItem((prev) => (prev === item ? null : item));
@@ -43,6 +49,21 @@ const NavBar = () => {
 
   const onClick = (path) => {
     router.push(`/admin${path}`);
+  };
+
+  useEffect(() => {
+    if (user) fetchUserRole();
+  }, [user]);
+
+  const fetchUserRole = async () => {
+    const { data } = await supabase
+      .from("members")
+      .select("role")
+      .eq("user_id", user.id)
+      .single();
+
+    console.log(data);
+    setUserRole(data.role);
   };
 
   const drawerContent = (
@@ -95,6 +116,10 @@ const NavBar = () => {
                 >
                   <List component="div" disablePadding>
                     {group.items.map((item, itemIndex) => {
+                      if (item.role && !userRole) return null;
+                      if (item.role && userRole !== item.role) {
+                        return null;
+                      }
                       return (
                         <ListItemButton
                           sx={{ pl: 4, pr: 4 }}

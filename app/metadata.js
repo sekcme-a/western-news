@@ -1,20 +1,21 @@
 const DATA = {
   NAME: `서부뉴스`,
+  SUBTITLE: `내일의 중심이 되는 뉴스`,
   DESCRIPTION: `서부 뉴스에서 실시간 속보와 핵심 정보를 놓치지 마세요, 가장 빠르고 정확한 오늘의 주요 뉴스 신문.`,
   URL: `https://www.western-news.co.kr`,
 };
 
 const metadata = {
   metadataBase: new URL(DATA.URL),
-  title: `${DATA.NAME}`,
+  title: `${DATA.NAME} - ${DATA.SUBTITLE}`,
   title: {
-    default: `${DATA.NAME}`,
+    default: `${DATA.NAME} - ${DATA.SUBTITLE}`,
     template: `%s | ${DATA.NAME}`,
   },
   description: DATA.DESCRIPTION,
   keywords: `${DATA.NAME}, 서부, 뉴스, 신문`,
   openGraph: {
-    title: `${DATA.NAME}`,
+    title: `${DATA.NAME} - ${DATA.SUBTITLE}`,
     description: DATA.DESCRIPTION,
     url: DATA.URL,
     siteName: DATA.NAME,
@@ -29,7 +30,7 @@ const metadata = {
     type: `website`,
   },
   twitter: {
-    title: DATA.NAME,
+    title: `${DATA.NAME} - ${DATA.SUBTITLE}`,
     description: DATA.DESCRIPTION,
     images: [`${DATA.URL}/images/og_logo.png`],
   },
