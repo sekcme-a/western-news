@@ -13,6 +13,8 @@ import "react-quill-new/dist/quill.snow.css";
 import CategorySelector from "./CategorySelector/CategorySelector";
 import MainArticleSetterDialog from "./MainArticleSetterDialog";
 import { useAuth } from "@/providers/AuthProvider";
+import ChatGptButton from "./ChatGptButton";
+import { htmlToPlainString } from "@/utils/lib/htmlToPlainString";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 
@@ -28,12 +30,12 @@ export default function ArticleEditor({
 
   const [title, setTitle] = useState(article?.title || "");
   const [author, setAuthor] = useState(
-    article?.author || profile.display_name || ""
+    article?.author || profile.display_name || "",
   );
   const [files, setFiles] = useState(article?.files || []);
   const [prevFiles, setPrevFiles] = useState(article?.files || []);
   const [prevImages, setPrevImages] = useState(
-    article ? extractImagePathsFromHtml(article.content) : []
+    article ? extractImagePathsFromHtml(article.content) : [],
   );
 
   const quillRef = useRef();
@@ -41,7 +43,7 @@ export default function ArticleEditor({
   const [isDeleting, setIsDeleting] = useState(false);
 
   const [selectedCategories, setSelectedCategories] = useState(
-    prevSelectedCategories || []
+    prevSelectedCategories || [],
   );
 
   const [isMainArticleDialogOpen, setIsMainArticleDialogOpen] = useState(false);
@@ -77,7 +79,7 @@ export default function ArticleEditor({
 
       if (existingError) {
         throw new Error(
-          "기존 카테고리 조회 중 오류 발생: " + existingError.message
+          "기존 카테고리 조회 중 오류 발생: " + existingError.message,
         );
       }
 
@@ -95,17 +97,17 @@ export default function ArticleEditor({
 
           if (error) throw error;
           return category.slug;
-        }
+        },
       );
       const selectedSlugs = await Promise.all(selectedCategorySlugsPromises);
 
       // 추가해야 할 slug
       const slugsToAdd = selectedSlugs.filter(
-        (slug) => !existingSlugs.includes(slug)
+        (slug) => !existingSlugs.includes(slug),
       );
       // 삭제해야 할 slug
       const slugsToRemove = existingSlugs.filter(
-        (slug) => !selectedSlugs.includes(slug)
+        (slug) => !selectedSlugs.includes(slug),
       );
 
       // 삭제
@@ -204,6 +206,10 @@ export default function ArticleEditor({
       >
         메인 기사 설정
       </Button>
+      <ChatGptButton
+        title={title}
+        content={htmlToPlainString(article.content)}
+      />
       <MainArticleSetterDialog
         open={isMainArticleDialogOpen}
         onClose={() => setIsMainArticleDialogOpen(false)}
