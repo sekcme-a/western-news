@@ -19,13 +19,13 @@ export default async function HeadlineList({ categorySlug }) {
     if (slugs.length === 0) {
       const { data, error } = await supabase.rpc(
         "get_random_articles_within_days",
-        { days: 15, count: 7 }
+        { days: 15, count: 7 },
       );
       articles = data;
     } else {
       const { data, error } = await supabase
         .from("article_categories")
-        .select("articles(title, thumbnail_image, id)")
+        .select("articles(title, thumbnail_image, images_bodo, id)")
         .in("category_slug", slugs)
         .eq("is_main", true);
 

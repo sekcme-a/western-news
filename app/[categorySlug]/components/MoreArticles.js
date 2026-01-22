@@ -28,10 +28,11 @@ export default function MoreArticles({ categorySlug }) {
         id,
         title,
         thumbnail_image,
+         images_bodo,
         content,
         created_at,
         article_categories!inner(category_slug, is_main)
-      `
+      `,
       )
       .eq("article_categories.category_slug", categorySlug)
       .eq("article_categories.is_main", false)

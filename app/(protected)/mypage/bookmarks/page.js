@@ -51,12 +51,13 @@ export default function BookmarksPage() {
             title,
             content,
             thumbnail_image,
+            images_bodo,
             category,
             created_at,
             author
           )
         `,
-          { count: "exact" }
+          { count: "exact" },
         )
         .eq("user_id", user.id)
         .order("created_at", { ascending: false })

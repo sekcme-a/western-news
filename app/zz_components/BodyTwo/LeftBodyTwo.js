@@ -13,9 +13,10 @@ export default async function LeftBodyTwo({ categorySlug }) {
       id,
       title,
        thumbnail_image, 
+       images_bodo,
         content,
       article_categories!inner(category_slug)
-    `
+    `,
       )
       .eq("article_categories.category_slug", categorySlug)
       .order("created_at", { ascending: false })
@@ -38,7 +39,7 @@ export default async function LeftBodyTwo({ categorySlug }) {
       id,
       title,
       article_categories!inner(category_slug)
-    `
+    `,
       )
       .eq("article_categories.category_slug", categorySlug)
       .order("created_at", { ascending: false })
@@ -57,7 +58,11 @@ export default async function LeftBodyTwo({ categorySlug }) {
             <div className="flex gap-x-4 items-center">
               <div className="flex-1 relative h-36 w-full mt-4 rounded-md overflow-hidden">
                 <Image
-                  src={fullArticle.thumbnail_image ?? "/images/og_logo.png"}
+                  src={
+                    fullArticle.thumbnail_image ??
+                    fullArticle.images_bodo?.[0] ??
+                    "/images/og_logo.png"
+                  }
                   alt={fullArticle.title}
                   fill
                   objectFit="cover"

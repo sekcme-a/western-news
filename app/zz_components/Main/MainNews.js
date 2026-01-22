@@ -17,7 +17,7 @@ export default async function MainNews() {
     /** 1️⃣ 주요 기사 불러오기 (헤드라인 기사 제외) */
     const { data: articleList, error } = await supabase.rpc(
       "get_unique_main_articles",
-      { p_limit: 4, p_exclude_id: headlineData?.article_id }
+      { p_limit: 4, p_exclude_id: headlineData?.article_id },
     );
     if (error) throw new Error(`메인 뉴스 조회 실패: ${error.message}`);
 
@@ -38,7 +38,11 @@ export default async function MainNews() {
                 <article className="mb-7 md:mb-0">
                   <div className="relative w-full h-40 rounded-lg overflow-hidden">
                     <Image
-                      src={article.thumbnail_image ?? "/images/og_logo.png"}
+                      src={
+                        article.thumbnail_image ??
+                        article.images_bodo?.[0] ??
+                        "/images/og_logo.png"
+                      }
                       alt={article.title}
                       fill
                       style={{ objectFit: "cover" }}
@@ -58,7 +62,11 @@ export default async function MainNews() {
                   </div>
                   <div className="relative w-1/5 aspect-square   rounded-lg overflow-hidden">
                     <Image
-                      src={article.thumbnail_image ?? "/images/og_logo.png"}
+                      src={
+                        article.thumbnail_image ??
+                        article.images_bodo?.[0] ??
+                        "/images/og_logo.png"
+                      }
                       alt={article.title}
                       fill
                       style={{ objectFit: "cover" }}

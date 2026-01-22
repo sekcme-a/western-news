@@ -39,6 +39,7 @@ export default async function BodyArticles({ categorySlug }) {
       title,
       thumbnail_image,
       content,
+      images_bodo,
       article_categories!inner(category_slug)
     `,
       )
@@ -83,7 +84,11 @@ export default async function BodyArticles({ categorySlug }) {
                 </p>
                 <div className="relative w-[30%] h-20 rounded-xl overflow-hidden mt-3">
                   <Image
-                    src={imgArticle.thumbnail_image ?? "/images/og_logo.png"}
+                    src={
+                      imgArticle.thumbnail_image ??
+                      imgArticle.images_bodo?.[0] ??
+                      "/images/og_logo.png"
+                    }
                     alt={imgArticle.title ?? "기사 이미지"}
                     fill
                     objectFit="cover"

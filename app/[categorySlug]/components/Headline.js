@@ -9,7 +9,9 @@ export default async function Headline({ categorySlug }) {
   try {
     const { data, error } = await supabase
       .from("article_categories")
-      .select("articles(title, thumbnail_image, content, id)")
+      .select(
+        "articles(title, thumbnail_image, images_bodo, content, id, images_bodo)",
+      )
       .eq("category_slug", categorySlug)
       .eq("is_main", true)
       .maybeSingle();
@@ -37,9 +39,9 @@ export default async function Headline({ categorySlug }) {
                 article.thumbnail_image
                   ? article.thumbnail_image
                   : article.title?.includes("덕암") &&
-                    article.title?.includes("칼럼")
-                  ? "/images/kyunsik.png"
-                  : "/images/og_logo.png"
+                      article.title?.includes("칼럼")
+                    ? "/images/kyunsik.png"
+                    : (article.images_bodo?.[0] ?? "/images/og_logo.png")
               }
               alt={article.title}
               fill

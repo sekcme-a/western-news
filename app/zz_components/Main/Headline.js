@@ -10,7 +10,7 @@ export default async function Headline() {
     .from("article_categories")
     // 1. article_id를 통해 articles 테이블의 모든(*) 컬럼을 조인하여 가져옵니다.
     //    PostgREST/Supabase는 Foreign Key 관계를 기반으로 이 조인을 수행합니다.
-    .select("articles(title, thumbnail_image, id)")
+    .select("articles(title, thumbnail_image, id, images_bodo)")
     // 2. category_slug가 'general'인 항목을 필터링합니다.
     .eq("category_slug", "general")
     // 3. is_main이 true인 항목을 필터링합니다.
@@ -34,7 +34,11 @@ export default async function Headline() {
       <article>
         <div className="relative w-full h-64 md:h-96 md:rounded-xl overflow-hidden">
           <Image
-            src={articleData.thumbnail_image ?? "/images/og_logo.png"}
+            src={
+              articleData.thumbnail_image ??
+              articleData.images_bodo?.[0] ??
+              "/images/og_logo.png"
+            }
             alt={articleData.title}
             // 2. width, height 대신 fill 속성을 사용합니다.
             fill

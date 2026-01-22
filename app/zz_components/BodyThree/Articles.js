@@ -24,9 +24,10 @@ export default function Articles({ categorySlug, categoryName, key }) {
       id,
       title,
       thumbnail_image, 
+      images_bodo,
       content,
       article_categories!inner(category_slug)
-    `
+    `,
       )
       .eq("article_categories.category_slug", categorySlug)
       .order("created_at", { ascending: false })
@@ -40,7 +41,7 @@ export default function Articles({ categorySlug, categoryName, key }) {
       title,
       content,
       article_categories!inner(category_slug)
-    `
+    `,
       )
       .eq("article_categories.category_slug", categorySlug)
       .order("created_at", { ascending: false })
@@ -63,7 +64,11 @@ export default function Articles({ categorySlug, categoryName, key }) {
             <Link href={`article/${list[0]?.id}`} aria-label="기사로 이동">
               <div className="mt-4 rounded-md overflow-hidden relative w-full h-36">
                 <Image
-                  src={list[0]?.thumbnail_image ?? "/images/og_logo.png"}
+                  src={
+                    list[0]?.thumbnail_image ??
+                    list[0]?.images_bodo?.[0] ??
+                    "/images/og_logo.png"
+                  }
                   alt={list[0]?.title ?? `${categoryName} 대표 이미지`}
                   fill
                   objectFit="cover"

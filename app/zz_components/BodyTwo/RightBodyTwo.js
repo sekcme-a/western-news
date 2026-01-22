@@ -13,8 +13,9 @@ export default async function RightBodyTwo({ categorySlug }) {
       id,
       title,
       thumbnail_image,
+      images_bodo,
       article_categories!inner(category_slug)
-    `
+    `,
       )
       .eq("article_categories.category_slug", categorySlug)
       .order("created_at", { ascending: false })
@@ -32,7 +33,7 @@ export default async function RightBodyTwo({ categorySlug }) {
       id,
       title,
       article_categories!inner(category_slug)
-    `
+    `,
       )
       .eq("article_categories.category_slug", categorySlug)
       .order("created_at", { ascending: false })
@@ -54,7 +55,9 @@ export default async function RightBodyTwo({ categorySlug }) {
               <div className="relative w-full h-36 rounded-md overflow-hidden">
                 <Image
                   src={
-                    imageArticles[0]?.thumbnail_image ?? "/images/og_logo.png"
+                    imageArticles[0]?.thumbnail_image ??
+                    imageArticles[0]?.images_bodo?.[0] ??
+                    "/images/og_logo.png"
                   }
                   alt={imageArticles[0]?.title}
                   fill
@@ -90,7 +93,9 @@ export default async function RightBodyTwo({ categorySlug }) {
               <div className="relative w-full h-36 rounded-md overflow-hidden">
                 <Image
                   src={
-                    imageArticles[1]?.thumbnail_image ?? "/images/og_logo.png"
+                    imageArticles[1]?.thumbnail_image ??
+                    imageArticles[1]?.images_bodo?.[0] ??
+                    "/images/og_logo.png"
                   }
                   alt={imageArticles[1]?.title}
                   fill

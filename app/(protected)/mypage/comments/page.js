@@ -49,10 +49,11 @@ export default function CommentsPage() {
             id,
             title,
             thumbnail_image,
+             images_bodo,
             category
           )
         `,
-          { count: "exact" }
+          { count: "exact" },
         )
         .eq("user_id", user.id)
         .eq("is_deleted", false)

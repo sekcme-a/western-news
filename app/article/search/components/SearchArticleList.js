@@ -13,7 +13,7 @@ export default async function SearchArticleList({ input }) {
   try {
     const { data, error } = await supabase
       .from("articles")
-      .select("title, thumbnail_image, content, id")
+      .select("title, thumbnail_image,  images_bodo, content, id")
       .or(`title.ilike.%${input}%`)
       // .or(`title.ilike.%${input}%,content.ilike.%${input}%`)
       .order("created_at", { ascending: false })

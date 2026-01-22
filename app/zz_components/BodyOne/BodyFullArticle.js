@@ -13,9 +13,10 @@ export default async function BodyFullArticle({ categorySlug }) {
       id,
       title,
       thumbnail_image,
+      images_bodo,
       content,
       article_categories!inner(category_slug)
-    `
+    `,
       )
       .eq("article_categories.category_slug", categorySlug)
       .limit(1);
@@ -43,7 +44,11 @@ export default async function BodyFullArticle({ categorySlug }) {
           </p>
           <div className="relative w-full h-64 rounded-xl overflow-hidden mt-6">
             <Image
-              src={article.thumbnail_image ?? "/images/og_logo.png"}
+              src={
+                article.thumbnail_image ??
+                article.images_bodo?.[0] ??
+                "/images/og_logo.png"
+              }
               alt={article.title}
               fill
               objectFit="cover"

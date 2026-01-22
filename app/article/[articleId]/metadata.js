@@ -5,7 +5,7 @@ export async function generateMetadata({ params }) {
   const supabase = await createServerSupabaseClient();
   const { data } = await supabase
     .from("articles")
-    .select("title, content, thumbnail_image")
+    .select("title, content, thumbnail_image, images_bodo")
     .eq("id", params.articleId)
     .single();
 
@@ -22,14 +22,14 @@ export async function generateMetadata({ params }) {
       description: `${plainContent}`.slice(0, 100),
       images: data.thumbnail_image
         ? [data.thumbnail_image]
-        : ["/images/og_logo.png"],
+        : [data.images_bodo?.[0] ?? "/images/og_logo.png"],
     },
     twitter: {
       title: data.title,
       description: `${plainContent}`.slice(0, 100),
       images: data.thumbnail_image
         ? [data.thumbnail_image]
-        : ["/images/og_logo.png"],
+        : [data.images_bodo?.[0] ?? "/images/og_logo.png"],
     },
   };
 }

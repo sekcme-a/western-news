@@ -69,11 +69,11 @@ export default function ArticleContent({ article }) {
           <div className="w-full mt-5">
             <Image
               src={
-                article.thumbnail_image ??
+                (article.thumbnail_image ??
                 (article.title?.includes("덕암") &&
-                  article.title?.includes("칼럼"))
+                  article.title?.includes("칼럼")))
                   ? "/images/kyunsik.png"
-                  : "/images/og_logo.png"
+                  : (article.images_bodo?.[0] ?? "/images/og_logo.png")
               }
               alt={article.title}
               objectFit={
