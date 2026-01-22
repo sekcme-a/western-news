@@ -206,10 +206,12 @@ export default function ArticleEditor({
       >
         메인 기사 설정
       </Button>
-      <ChatGptButton
-        title={title}
-        content={htmlToPlainString(article.content)}
-      />
+      {articleId !== "new" && article && (
+        <ChatGptButton
+          title={title}
+          content={htmlToPlainString(article.content)}
+        />
+      )}
       <MainArticleSetterDialog
         open={isMainArticleDialogOpen}
         onClose={() => setIsMainArticleDialogOpen(false)}
